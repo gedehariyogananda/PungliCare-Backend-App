@@ -74,6 +74,7 @@ class DatabaseSeeder extends Seeder
             'judul_laporan' => "Parkir Ilegal Di Indomaret Sukolilo",
             'deskripsi_laporan' => "Parkir Ilegal Di Indomaret Sukolilo sangat membuat saya risih, diminta 50.000 anjinggg",
             'status_laporan' => "perlu-dukungan",
+            'alamat_laporan' => "Kertajaya Indah Regency 2, RW 02, Gebang Putih, Sukolilo, Surabaya, Jawa Timur, Jawa, 60111, Indonesia"
         ]);
 
         Laporan::create([
@@ -83,6 +84,7 @@ class DatabaseSeeder extends Seeder
             'judul_laporan' => "Parkir Ilegal Di Alfamart Sukolilo",
             'deskripsi_laporan' => "Parkir Ilegal Di Indomaret Alfamart sangat membuat saya risih, diminta 50.000 anjinggg",
             'status_laporan' => "perlu-dukungan",
+            'alamat_laporan' => "Kertajaya Indah Regency, RW 01, Gebang Putih, Sukolilo, Surabaya, Jawa Timur, Jawa, 60111, Indonesia"
         ]);
 
         Laporan::create([
@@ -92,6 +94,7 @@ class DatabaseSeeder extends Seeder
             'judul_laporan' => "Parkir Ilegal Di sukolilo regency Sukolilo",
             'deskripsi_laporan' => "Parkir Ilegal Di sukolilo regency, ",
             'status_laporan' => "perlu-dukungan",
+            'alamat_laporan' => "SMK Negeri 10 Surabaya, Jalan Keputih Gang III E, RW 02, Keputih, Sukolilo, Surabaya, Jawa Timur, Jawa, 60111, Indonesia"
         ]);
 
         NotifUser::create([
