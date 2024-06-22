@@ -95,12 +95,6 @@ class LaporanController extends Controller
         }
 
         $is_laporan_sendiri = $laporan->user_id == auth()->user()->id;
-
-        $latitude = (float) str_replace(',', '.', $laporan->lat);
-        $longitude = (float) str_replace(',', '.', $laporan->long);
-
-        $alamat = $this->convertAlamat->getAddressFromCoordinates($latitude, $longitude);
-
         $buktiLaporan = $laporan->BuktiLaporan->map(function ($bukti) {
             return [
                 'bukti_laporan' => $bukti->bukti_laporan,
@@ -142,7 +136,7 @@ class LaporanController extends Controller
                     'id' => $laporan->id,
                     'judul_laporan' => $laporan->judul_laporan,
                     'deskripsi_laporan' => $laporan->deskripsi_laporan,
-                    'alamat_laporan' => $alamat,
+                    'alamat_laporan' => $laporan->alamat_laporan ? $laporan->alamat_laporan : null,
                     'status_laporan' => $laporan->status_laporan,
                     'pendukung' => $jumlah_pendukung,
                     'is_laporan_sendiri' => $is_laporan_sendiri,
@@ -159,7 +153,7 @@ class LaporanController extends Controller
                     'id' => $laporan->id,
                     'judul_laporan' => $laporan->judul_laporan,
                     'deskripsi_laporan' => $laporan->deskripsi_laporan,
-                    'alamat_laporan' => $alamat,
+                    'alamat_laporan' => $laporan->alamat_laporan ? $laporan->alamat_laporan : null,
                     'status_laporan' => $laporan->status_laporan,
                     'pendukung' => $jumlah_pendukung,
                     'is_laporan_sendiri' => $is_laporan_sendiri,
@@ -399,23 +393,25 @@ class LaporanController extends Controller
 
         if ($status_laporan == 'semua-data-terdekat') {
             $laporanTerdekatInit = Laporan::selectRaw(
-                "*, 
-            ($radius * acos(cos(radians(?)) * cos(radians(`lat`)) * cos(radians(`long`) - radians(?)) + sin(radians(?)) * sin(radians(`lat`)))) AS distance",
+                "id,alamat_laporan, judul_laporan, deskripsi_laporan, lat, `long` as longitude, status_laporan,
+                ($radius * acos(cos(radians(?)) * cos(radians(`lat`)) * cos(radians(`long`) - radians(?)) + sin(radians(?)) * sin(radians(`lat`)))) AS distance",
                 [$lat, $long, $lat]
             )
+                ->where('status_laporan', 'perlu-dukungan')
                 ->having("distance", "<", 5)
                 ->orderBy("distance", "asc")
-                ->with('BuktiLaporan', 'ReportLaporan', 'NotifUser', 'VoteLaporan')
+                ->with(['BuktiLaporan:id,laporan_id,bukti_laporan'])
                 ->get();
         } else {
             $laporanTerdekatInit = Laporan::selectRaw(
-                "*, 
-            ($radius * acos(cos(radians(?)) * cos(radians(`lat`)) * cos(radians(`long`) - radians(?)) + sin(radians(?)) * sin(radians(`lat`)))) AS distance",
+                "id,alamat_laporan, judul_laporan, deskripsi_laporan, lat, `long` as longitude, status_laporan,
+                    ($radius * acos(cos(radians(?)) * cos(radians(`lat`)) * cos(radians(`long`) - radians(?)) + sin(radians(?)) * sin(radians(`lat`)))) AS distance",
                 [$lat, $long, $lat]
             )
+                ->where('status_laporan', 'perlu-dukungan')
                 ->having("distance", "<", 5)
                 ->orderBy("distance", "asc")
-                ->with('BuktiLaporan', 'ReportLaporan', 'NotifUser', 'VoteLaporan')
+                ->with(['BuktiLaporan:id,laporan_id,bukti_laporan'])
                 ->where('status_laporan', $status_laporan)
                 ->get();
         }
@@ -428,21 +424,14 @@ class LaporanController extends Controller
         }
 
         $mappedData = $laporanTerdekatInit->map(function ($item) {
-
-            // init lat long laporan
-            $latitude = (float) str_replace(',', '.', $item->lat);
-            $longitude = (float) str_replace(',', '.', $item->long);
-
-            // init alamat
-            $alamat = $this->convertAlamat->getAddressFromCoordinates($latitude, $longitude);
-
             return [
                 'id' => $item->id,
                 'judul_laporan' => $item->judul_laporan,
                 'deskripsi_laporan' => $item->deskripsi_laporan,
-                'alamat_laporan' => $alamat,
+                'alamat_laporan' => $item->alamat_laporan,
                 'status_laporan' => $item->status_laporan,
                 'bukti_laporan' => $item->BuktiLaporan ? $item->BuktiLaporan[0]->bukti_laporan : null,
+                'pendukung' => $item->VoteLaporan ? $item->VoteLaporan->count() : 0,
             ];
         });
 
@@ -471,21 +460,14 @@ class LaporanController extends Controller
         }
 
         $mappedData = $laporanAnda->map(function ($item) {
-
-            // init lat long laporan
-            $latitude = (float) str_replace(',', '.', $item->lat);
-            $longitude = (float) str_replace(',', '.', $item->long);
-
-            // init alamat
-            $alamat = $this->convertAlamat->getAddressFromCoordinates($latitude, $longitude);
-
             return [
                 'id' => $item->id,
                 'judul_laporan' => $item->judul_laporan,
                 'deskripsi_laporan' => $item->deskripsi_laporan,
-                'alamat_laporan' => $alamat,
+                'alamat_laporan' => $item->alamat_laporan ? $item->alamat_laporan : null,
                 'status_laporan' => $item->status_laporan,
                 'bukti_laporan' => $item->BuktiLaporan ? $item->BuktiLaporan[0]->bukti_laporan : null,
+                'pendukung' => $item->VoteLaporan ? $item->VoteLaporan->count() : 0,
             ];
         });
 
@@ -513,7 +495,6 @@ class LaporanController extends Controller
             $latitude = (float) str_replace(',', '.', $laporan->lat);
             $longitude = (float) str_replace(',', '.', $laporan->long);
 
-            $alamat = $this->convertAlamat->getAddressFromCoordinates($latitude, $longitude);
             $imagePath = asset('storage/' . $laporan->buktiLaporan[0]->bukti_laporan);
 
             return [
@@ -524,8 +505,8 @@ class LaporanController extends Controller
                 'deskripsi_laporan' => $laporan->deskripsi_laporan,
                 'image_laporan' => $imagePath,
                 'status_laporan' => $laporan->status_laporan,
-                'alamat' => $alamat,
-                'jumlahPendukung' => $laporan->VoteLaporan ? $laporan->VoteLaporan->count() : 0,
+                'alamat_laporan' => $laporan->alamat_laporan ? $laporan->alamat_laporan : null,
+                'pendukung' => $laporan->VoteLaporan ? $laporan->VoteLaporan->count() : 0,
             ];
         });
 
@@ -545,7 +526,7 @@ class LaporanController extends Controller
             'deskripsi_laporan' => 'required|string',
             'bukti_laporan' => 'required|array',
             'bukti_laporan.*.bukti_laporan' => 'required|file|mimes:jpeg,png,jpg,mp4|max:100000',
-            'alamat' => 'nullable|string',
+            'alamat_laporan' => 'required|string',
             'lat' => 'required|numeric',
             'long' => 'required|numeric',
         ]);
@@ -581,7 +562,7 @@ class LaporanController extends Controller
                 'user_id' => $initLog,
                 'judul_laporan' => $request->judul_laporan,
                 'deskripsi_laporan' => $request->deskripsi_laporan,
-                'alamat' => $request->alamat,
+                'alamat_laporan' => $request->alamat_laporan,
                 'lat' => $request->lat,
                 'long' => $request->long,
             ]);
@@ -608,5 +589,19 @@ class LaporanController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function convertAlamat($latitude, $longitude)
+    {
+        $latitude = floatval($latitude);
+        $longitude = floatval($longitude);
+
+        $alamat = $this->convertAlamat->getAddressFromCoordinates($latitude, $longitude);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'lat long berhasil diproses dadi alamat',
+            'data' => $alamat
+        ]);
     }
 }

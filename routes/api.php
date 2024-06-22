@@ -58,4 +58,6 @@ Route::controller(LaporanController::class)->group(function () {
     // buat laporan 
     Route::post('/laporan/buat-laporan/{lat}/{long}', 'buatLaporan');
 
+    // service convert alamat from lat long 
+    Route::get('/laporan/convert-alamat/{lat}/{long}', 'convertAlamat');
 });
