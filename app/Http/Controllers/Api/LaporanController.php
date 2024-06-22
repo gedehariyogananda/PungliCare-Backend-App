@@ -431,6 +431,7 @@ class LaporanController extends Controller
                 'alamat_laporan' => $item->alamat_laporan,
                 'status_laporan' => $item->status_laporan,
                 'bukti_laporan' => $item->BuktiLaporan ? $item->BuktiLaporan[0]->bukti_laporan : null,
+                'pendukung' => $item->VoteLaporan ? $item->VoteLaporan->count() : 0,
             ];
         });
 
@@ -466,6 +467,7 @@ class LaporanController extends Controller
                 'alamat_laporan' => $item->alamat_laporan ? $item->alamat_laporan : null,
                 'status_laporan' => $item->status_laporan,
                 'bukti_laporan' => $item->BuktiLaporan ? $item->BuktiLaporan[0]->bukti_laporan : null,
+                'pendukung' => $item->VoteLaporan ? $item->VoteLaporan->count() : 0,
             ];
         });
 
@@ -504,7 +506,7 @@ class LaporanController extends Controller
                 'image_laporan' => $imagePath,
                 'status_laporan' => $laporan->status_laporan,
                 'alamat_laporan' => $laporan->alamat_laporan ? $laporan->alamat_laporan : null,
-                'jumlahPendukung' => $laporan->VoteLaporan ? $laporan->VoteLaporan->count() : 0,
+                'pendukung' => $laporan->VoteLaporan ? $laporan->VoteLaporan->count() : 0,
             ];
         });
 
