@@ -51,6 +51,12 @@
     <x-slot name="pages">Laporan</x-slot>
     <x-slot name="pagesInit">Semua Laporan</x-slot>
 
+    @if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+
     <section class="section">
         <div class="row">
             @foreach($semuaData as $data)
@@ -79,30 +85,33 @@
             $statusText = 'Status Tidak Diketahui';
             }
             @endphp
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div style="position: relative;">
-                            <img class="img-fluid" src="{{ $data['image_laporan'] }}" alt="Laporan Image">
-                            <span class="status-label {{ $statusClass }}">{{ $statusText }}</span>
+                <div class="col-md-4">
+                    <a href="{{ route('laporan.detail',['id'=>$data['id']]) }}">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="position: relative;">
+                                <img class="img-fluid" src="{{ $data['image_laporan'] }}" alt="Laporan Image">
+                                <span class="status-label {{ $statusClass }}">{{ $statusText }}</span>
+                            </div>
+                            <h6>{{ $data['judul_laporan'] }}</h6>
+                            <span style="color: #4A4A4A; font-size: 10px; max-height: 50px; overflow: hidden;">
+                                {{ \Illuminate\Support\Str::limit($data['deskripsi_laporan'], 50) }}
+                            </span>
+                            <br>
+                            <span style="font-size: 8px;">
+                                <i style="color: #FE8235;" class="bi bi-geo-alt"></i>
+                                {{ \Illuminate\Support\Str::limit($data['alamat'], 50) }}
+                            </span>
+                            <br>
+                            <span style="font-size: 8px;">
+                                <i style="color: #FE8235;" class="bi bi-person"></i>
+                                {{ $data['jumlahPendukung'] }} Orang mendukung
+                            </span>
                         </div>
-                        <h6>{{ $data['judul_laporan'] }}</h6>
-                        <span style="color: #4A4A4A; font-size: 10px; max-height: 50px; overflow: hidden;">
-                            {{ \Illuminate\Support\Str::limit($data['deskripsi_laporan'], 50) }}
-                        </span>
-                        <br>
-                        <span style="font-size: 8px;">
-                            <i style="color: #FE8235;" class="bi bi-geo-alt"></i>
-                            {{ \Illuminate\Support\Str::limit($data['alamat'], 50) }}
-                        </span>
-                        <br>
-                        <span style="font-size: 8px;">
-                            <i style="color: #FE8235;" class="bi bi-person"></i>
-                            {{ $data['jumlahPendukung'] }} Orang mendukung
-                        </span>
                     </div>
+                </a>
                 </div>
-            </div>
+           
             @endforeach
         </div>
     </section>
