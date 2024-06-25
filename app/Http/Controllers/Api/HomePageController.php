@@ -44,6 +44,7 @@ class HomePageController extends Controller
                 'alamat_laporan' => $item->alamat_laporan,
                 'status_laporan' => $item->status_laporan,
                 'bukti_laporan' => $item->BuktiLaporan->isNotEmpty() ? $item->BuktiLaporan->first()->bukti_laporan : null,
+                'pendukung' => $item->VoteLaporan ? $item->VoteLaporan->count() : 0,
             ];
         });
 
