@@ -96,8 +96,14 @@ class LaporanController extends Controller
 
         $is_laporan_sendiri = $laporan->user_id == auth()->user()->id;
         $buktiLaporan = $laporan->BuktiLaporan->map(function ($bukti) {
+            // $is_video = strpos($bukti->bukti_laporan, '.mp4') ? true : false;
+            $videoExtensions = ['mp4', 'avi', 'mkv', 'mov', 'wmv', 'flv', 'webm', 'mpeg', 'mpg', '3gp', 'ogg'];
+            $fileExtension = strtolower(pathinfo($bukti->bukti_laporan, PATHINFO_EXTENSION));
+            $is_video = in_array($fileExtension, $videoExtensions);
+
             return [
                 'bukti_laporan' => $bukti->bukti_laporan,
+                'is_video' => $is_video
             ];
         });
 
@@ -239,6 +245,12 @@ class LaporanController extends Controller
             $selectCountVoteLaporan = VoteLaporan::where('laporan_id', $id)->count();
             if ($selectCountVoteLaporan >= 50) {
                 $laporan->update([
+                    'status_laporan' => 'perlu-diatasi'
+                ]);
+
+                // notif user
+                $laporan->NotifUser()->create([
+                    'user_id' => $laporan->user_id,
                     'status_laporan' => 'perlu-diatasi'
                 ]);
             }
@@ -525,7 +537,7 @@ class LaporanController extends Controller
             'judul_laporan' => 'required|string',
             'deskripsi_laporan' => 'required|string',
             'bukti_laporan' => 'required|array',
-            'bukti_laporan.*.bukti_laporan' => 'required|file|mimes:jpeg,png,jpg,mp4|max:100000',
+            'bukti_laporan.*.bukti_laporan' => 'required|file|mimes:jpeg,png,jpg,mp4,avi,mkv,mov,wmv,flv,webm,mpeg,mpg,3gp,ogg|max:100000',
             'alamat_laporan' => 'required|string',
             'lat' => 'required|numeric',
             'long' => 'required|numeric',
@@ -575,7 +587,7 @@ class LaporanController extends Controller
 
                 BuktiLaporan::create([
                     'laporan_id' => $laporan->id,
-                    'bukti_laporan' => $buktiLaporanName,
+                    'bukti_laporan' => 'bukti-laporan/' . $buktiLaporanName,
                 ]);
             }
 
