@@ -537,7 +537,7 @@ class LaporanController extends Controller
             'judul_laporan' => 'required|string',
             'deskripsi_laporan' => 'required|string',
             'bukti_laporan' => 'required|array',
-            'bukti_laporan.*.bukti_laporan' => 'required|file|mimes:jpeg,png,jpg,mp4,avi,mkv,mov,wmv,flv,webm,mpeg,mpg,3gp,ogg|max:100000',
+            'bukti_laporan.*.bukti_laporan' => 'required|file|max:100000',
             'alamat_laporan' => 'required|string',
             'lat' => 'required|numeric',
             'long' => 'required|numeric',
