@@ -22,37 +22,29 @@ class HomePageController extends Controller
     {
         $lat = floatval($late);
         $long = floatval($longe);
-
         $radius = 6371;
 
         $laporanTerdekatInit = Laporan::selectRaw(
-            "*, 
-        ($radius * acos(cos(radians(?)) * cos(radians(`lat`)) * cos(radians(`long`) - radians(?)) + sin(radians(?)) * sin(radians(`lat`)))) AS distance",
+            "id,alamat_laporan, judul_laporan, deskripsi_laporan, lat, `long` as longitude, status_laporan,
+            ($radius * acos(cos(radians(?)) * cos(radians(`lat`)) * cos(radians(`long`) - radians(?)) + sin(radians(?)) * sin(radians(`lat`)))) AS distance",
             [$lat, $long, $lat]
         )
+            ->where('status_laporan', 'perlu-dukungan')
             ->having("distance", "<", 5)
             ->orderBy("distance", "asc")
-            ->with('BuktiLaporan', 'ReportLaporan', 'NotifUser', 'VoteLaporan')
-            ->where('status_laporan', 'perlu-dukungan')
             ->limit(4)
+            ->with(['BuktiLaporan:id,laporan_id,bukti_laporan'])
             ->get();
 
         $mappedData = $laporanTerdekatInit->map(function ($item) {
-
-            // init lat long laporan
-            $latitude = (float) str_replace(',', '.', $item->lat);
-            $longitude = (float) str_replace(',', '.', $item->long);
-
-            // init alamat
-            $alamat = $this->convertAlamat->getAddressFromCoordinates($latitude, $longitude);
-
             return [
                 'id' => $item->id,
                 'judul_laporan' => $item->judul_laporan,
                 'deskripsi_laporan' => $item->deskripsi_laporan,
-                'alamat_laporan' => $alamat,
+                'alamat_laporan' => $item->alamat_laporan,
                 'status_laporan' => $item->status_laporan,
-                'bukti_laporan' => $item->BuktiLaporan ? $item->BuktiLaporan[0]->bukti_laporan : null,
+                'bukti_laporan' => $item->BuktiLaporan->isNotEmpty() ? $item->BuktiLaporan->first()->bukti_laporan : null,
+                'pendukung' => $item->VoteLaporan ? $item->VoteLaporan->count() : 0,
             ];
         });
 
@@ -62,6 +54,7 @@ class HomePageController extends Controller
             'data' => $mappedData
         ]);
     }
+
 
     public function name()
     {

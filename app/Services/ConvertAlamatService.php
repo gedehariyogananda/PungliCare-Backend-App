@@ -3,11 +3,19 @@
 namespace App\Services;
 
 use Exception;
+use Illuminate\Support\Facades\Cache;
 
 class ConvertAlamatService
 {
     public function getAddressFromCoordinates($latitude, $longitude)
     {
+        $cacheKey = "address_{$latitude}_{$longitude}";
+        $cachedAddress = Cache::get($cacheKey);
+
+        if ($cachedAddress) {
+            return $cachedAddress;
+        }
+
         $apiUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={$latitude}&lon={$longitude}";
 
         // Membuat koneksi cURL
@@ -20,8 +28,10 @@ class ConvertAlamatService
         curl_close($ch);
 
         $data = json_decode($response, true);
-
         $alamat = $data['display_name'] ?? '';
+
+        // Cache the address for 1 day
+        Cache::put($cacheKey, $alamat, now()->addDay());
 
         return $alamat;
     }

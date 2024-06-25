@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('lat');
             $table->string('long');
-            $table->text('alamat')->nullable();
+            $table->text('alamat_laporan')->nullable();
             $table->string('judul_laporan');
             $table->text('deskripsi_laporan');
             $table->enum('status_laporan', ['perlu-dukungan', 'perlu-diatasi', 'sedang-diatasi', 'sudah-teratasi']);
