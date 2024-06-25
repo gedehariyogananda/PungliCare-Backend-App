@@ -38,6 +38,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"
         integrity="sha512-v10dCyQ3yODmLEyUusYtY1Wl2YmoRm6MN8aTznnT2G7BhLFhCpFFyV3wN0s1Zl4EKF2ws4Jk5dji4Km36gXcxQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </body>
 
 </html>

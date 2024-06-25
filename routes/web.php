@@ -37,15 +37,13 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     Route::controller(LaporanController::class)->group(function () {
         Route::get('laporan', 'index')->name('laporan');
+        Route::get('laporan/{id}','detail')->name('laporan.detail');
+        Route::put('laporan/{id}','update')->name('laporan.update');
+        Route::delete('laporan/{id}','delete')->name('laporan.delete');
+        Route::get('comments/{id}','comment')->name('laporan.comment');
+        Route::post('comments/{id}', 'createComment')->name('comment.create');
     });
 });
 
 
-   // Route::group(['prefix' => 'components', 'as' => 'components.'], function () {
-    //     Route::get('/alert', function () {
-    //         return view('admin.component.alert');
-    //     })->name('alert');
-    //     Route::get('/accordion', function () {
-    //         return view('admin.component.accordion');
-    //     })->name('accordion');
-    // });
+  

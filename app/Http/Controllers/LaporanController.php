@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BuktiComment;
 use App\Models\Laporan;
+use App\Models\CommentLaporan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
@@ -19,6 +23,7 @@ class LaporanController extends Controller
             $imagePath = asset('storage/' . $laporan->buktiLaporan[0]->bukti_laporan);
 
             return [
+                'id' => $laporan->id,
                 'judul_laporan' => $laporan->judul_laporan,
                 'deskripsi_laporan' => $laporan->deskripsi_laporan,
                 'image_laporan' => $imagePath,
@@ -55,4 +60,79 @@ class LaporanController extends Controller
 
         return $alamat;
     }
+
+    public function detail($id)
+    {
+        $laporan = Laporan::findOrFail($id)->with(['ReportLaporan', 'BuktiLaporan', 'NotifUser', 'VoteLaporan', 'CommentLaporan', 'User'])->first();
+
+        $laporan->alamat = $this->getAddressFromCoordinates((float) str_replace(',', '.', $laporan->lat), (float) str_replace(',', '.', $laporan->long));
+
+        return view('laporan_page.detail', compact('laporan'));
+    }
+
+    public function update($id, Request $request)
+    {
+
+        $laporan = Laporan::findOrFail($id);
+
+        $validated = Validator::make($request->all(), [
+            'status_laporan' => 'required|in:sedang-diatasi,sudah-teratasi'
+        ]);
+
+        if ($validated->fails()) {
+            return redirect()->back()->withErrors($validated)->withInput();
+        }
+
+        $laporan->status_laporan = $request->input('status_laporan');
+
+        $laporan->save();
+
+        return redirect()->route('laporan.detail', $id)->with('success', 'Status laporan berhasil diupdate.');
+    }
+
+    public function delete($id)
+    {
+        $laporan = Laporan::findOrFail($id);
+
+        $laporan->delete();
+
+        return redirect()->route('laporan')->with('success', 'Laporan berhasil dihapus.');
+    }
+
+    public function comment($id){
+        $comments = CommentLaporan::where('laporan_id',$id)->with(['laporan','user','BuktiComment'])->get();
+        $laporanId = $id;
+        return view("laporan_page.comment", compact('comments','laporanId'));
+    }
+
+    public function createComment($id, Request $request){
+        $validated = Validator::make($request->all(),[
+            'comment_laporan' => 'required',
+            'bukti_comments.*' => 'file|mimes:jpg,jpeg,png,bmp,gif,svg,webp,mp4,avi,mov,wmv,mkv|max:20480'
+        ]);
+
+        if($validated->fails()){
+            return redirect()->back()->withErrors($validated)->withInput();
+        }
+
+        $comment = new CommentLaporan();
+        $comment->laporan_id = $id;
+        $comment->comment_laporan = $request->comment_laporan;
+        $comment->user_id =auth()->id();
+        $comment->save();
+
+        if($request->hasFile('bukti_comments')){
+            foreach($request->file('bukti_comments') as $file){
+                $path = $file->store('bukti_comments', 'public');
+                $buktiComment = new BuktiComment();
+                $buktiComment->comment_laporan_id = $comment->id;
+                $buktiComment->bukti_comment = $path;
+                $buktiComment->save();
+            }
+        }
+
+        return redirect()->back()->with('success', 'Sccess menambahkan komentar');
+
+    }
+
 }

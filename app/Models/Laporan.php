@@ -16,6 +16,11 @@ class Laporan extends Model
         return $this->hasMany(BuktiLaporan::class);
     }
 
+    public function User()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function ReportLaporan()
     {
         return $this->hasMany(ReportLaporan::class);
@@ -35,7 +40,5 @@ class Laporan extends Model
     {
         return $this->hasMany(CommentLaporan::class);
     }
-
-
 
 }
