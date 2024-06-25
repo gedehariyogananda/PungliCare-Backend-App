@@ -81,7 +81,7 @@
                                     break;
                                 case "perlu-dukungan" :
                                     $status = "Perlu Dukungan";
-                                    $color = "text-yellow-600  border-yellow-600";
+                                    $color = "text-yellow-400  border-yellow-400 ";
                                     break;
                                 case  "sedang-diatasi" :
                                     $status = "Sedang Diatasi";
@@ -168,13 +168,15 @@
                     <img src={{ asset("/images/Arrow.png") }} alt="" width="26" height="27">
                 </div>
              </a>
-                <div class="flex justify-between my-2">
-                    <div class="flex"> 
-                        <img src={{ asset("/images/report.png") }} alt="" width="30" height="30" class="mr-5">
-                        <p class="align-center m-auto">{{ count($laporan->ReportLaporan) }} Orang mendukung</p>
+                <a href="{{ route('laporan.reports', $laporan->id) }}">
+                    <div class="flex justify-between my-2">
+                        <div class="flex"> 
+                            <img src={{ asset("/images/report.png") }} alt="" width="30" height="30" class="mr-5">
+                            <p class="align-center m-auto  text-gray-600">{{ count($laporan->ReportLaporan) }} Orang Melaporkan</p>
+                        </div>
+                        <img src={{ asset("/images/Arrow.png") }} alt="" width="26" height="27">
                     </div>
-                    <img src={{ asset("/images/Arrow.png") }} alt="" width="26" height="27">
-                </div>
+                </a>
                 <button class="w-full p-3 bg-indigo-700 rounded-xl cursor-pointer text-white my-3 " data-bs-toggle="modal" data-bs-target="#editModalLabel">Edit Laporan</button>
                 <button class="w-full p-3 bg-red-600 rounded-xl cursor-pointer text-white" data-bs-toggle="modal" data-bs-target="#deleteModalLabel">Hapus Laporan</button>
             </div>

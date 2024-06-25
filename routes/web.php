@@ -42,6 +42,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::delete('laporan/{id}','delete')->name('laporan.delete');
         Route::get('comments/{id}','comment')->name('laporan.comment');
         Route::post('comments/{id}', 'createComment')->name('comment.create');
+        Route::get('reports/{id}','reports')->name('laporan.reports');
     });
 });
 

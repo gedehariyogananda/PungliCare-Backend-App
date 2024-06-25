@@ -11,4 +11,12 @@ class ReportLaporan extends Model
 
     protected $guarded = [];
 
+    public function laporan(){
+        return $this->belongsTo(Laporan::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
 }

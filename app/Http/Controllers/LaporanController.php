@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BuktiComment;
 use App\Models\Laporan;
 use App\Models\CommentLaporan;
+use App\Models\ReportLaporan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -135,4 +136,9 @@ class LaporanController extends Controller
 
     }
 
+    public function reports($id){
+        $reports = ReportLaporan::with(['laporan', 'user'])->where('laporan_id', $id)->get();
+
+        return view('laporan_page.report', compact('reports'));
+    }
 }
