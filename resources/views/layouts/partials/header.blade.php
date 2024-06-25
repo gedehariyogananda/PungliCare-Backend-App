@@ -34,7 +34,7 @@
                             <div class="user-menu d-flex">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar">
-                                        <img style="width: 200%;" src="{{ asset('storage/profile/poldajatim.png') }}"
+                                        <img style="width: 200%;" src="{{ asset('images/dishub/dishub.png') }}"
                                             alt="adwwadw">
                                     </div>
                                 </div>

@@ -22,12 +22,12 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         User::create([
-            'nama' => 'kapolsek sukolilo',
-            'email' => 'kapolsek@gmail.com',
+            'nama' => 'Dishub Surabaya',
+            'email' => 'dishub@gmail.com',
             'nomor_telepon' => '083133737660',
             'phone_number_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'roles' => 'kapolsek',
+            'roles' => 'dishub',
             'profile_photo_path' => 'profile/poldajatim.png',
         ]);
 
@@ -127,7 +127,7 @@ class DatabaseSeeder extends Seeder
             'long' => "112.7834058",
             'judul_laporan' => "Parkir Ilegal Di Indomaret Sukolilo",
             'deskripsi_laporan' => "Parkir Ilegal Di Indomaret Sukolilo sangat membuat saya risih, diminta 50.000 anjinggg",
-            'status_laporan' => "perlu-dukungan",
+            'status_laporan' => "sudah-teratasi",
             'alamat_laporan' => "Kertajaya Indah Regency 2, RW 02, Gebang Putih, Sukolilo, Surabaya, Jawa Timur, Jawa, 60111, Indonesia"
         ]);
 
@@ -189,7 +189,7 @@ class DatabaseSeeder extends Seeder
             'long' => "112.7873571",
             'judul_laporan' => "Parkir Ilegal Di Dharmahusada",
             'deskripsi_laporan' => "Parkir Ilegal Di Dharmahusada mengerikan, ",
-            'status_laporan' => "perlu-dukungan",
+            'status_laporan' => "perlu-diatasi",
             'alamat_laporan' => "Jl. Pondok Dharmahusada I Blok DR-301 No.2, RT.000/RW.00, Mulyorejo, Kec. Mulyorejo, Surabaya, Jawa Timur 60115"
         ]);
 
@@ -402,7 +402,27 @@ class DatabaseSeeder extends Seeder
                 'user_id' => $i + 5,
                 'laporan_id' => 1,
             ]);
+
+            VoteLaporan::create([
+                'user_id' => $i + 9,
+                'laporan_id' => 8,
+            ]);
+
+            VoteLaporan::create([
+                'user_id' => $i + 10,
+                'laporan_id' => 7,
+            ]);
         }
+
+        VoteLaporan::create([
+            'user_id' => 10,
+            'laporan_id' => 1,
+        ]);
+
+        VoteLaporan::create([
+            'user_id' => 11,
+            'laporan_id' => 7,
+        ]);
 
         // buatkan Votelaporan masing2 berjumlah 10 dukungan semua dengan user_id laporan tidak boleh sama 
         for ($i = 4; $i <= 11; $i++) {
@@ -419,16 +439,6 @@ class DatabaseSeeder extends Seeder
             VoteLaporan::create([
                 'user_id' => $i + 10,
                 'laporan_id' => 6,
-            ]);
-
-            VoteLaporan::create([
-                'user_id' => $i + 10,
-                'laporan_id' => 7,
-            ]);
-
-            VoteLaporan::create([
-                'user_id' => $i + 10,
-                'laporan_id' => 8,
             ]);
 
             // VoteLaporan::create([

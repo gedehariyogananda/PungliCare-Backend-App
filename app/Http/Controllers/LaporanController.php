@@ -6,6 +6,7 @@ use App\Models\BuktiComment;
 use App\Models\Laporan;
 use App\Models\CommentLaporan;
 use App\Models\ReportLaporan;
+use App\Models\VoteLaporan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -17,10 +18,10 @@ class LaporanController extends Controller
         $laporans = Laporan::with('BuktiLaporan', 'ReportLaporan', 'VoteLaporan')->get();
         $semuaData = $laporans->map(function ($laporan) {
 
-            $latitude = (float) str_replace(',', '.', $laporan->lat);
-            $longitude = (float) str_replace(',', '.', $laporan->long);
+            // $latitude = (float) str_replace(',', '.', $laporan->lat);
+            // $longitude = (float) str_replace(',', '.', $laporan->long);
 
-            $alamat = $this->getAddressFromCoordinates($latitude, $longitude);
+            // $alamat = $this->getAddressFromCoordinates($latitude, $longitude);
             $imagePath = asset('storage/' . $laporan->buktiLaporan[0]->bukti_laporan);
 
             return [
@@ -29,7 +30,7 @@ class LaporanController extends Controller
                 'deskripsi_laporan' => $laporan->deskripsi_laporan,
                 'image_laporan' => $imagePath,
                 'status_laporan' => $laporan->status_laporan,
-                'alamat' => $alamat,
+                'alamat' => $laporan->alamat_laporan,
                 'jumlahPendukung' => $laporan->VoteLaporan ? $laporan->VoteLaporan->count() : 0,
             ];
         });
@@ -38,35 +39,36 @@ class LaporanController extends Controller
     }
 
     // Fungsi untuk mendapatkan alamat dari koordinat
-    private function getAddressFromCoordinates($latitude, $longitude)
-    {
-        // API endpoint dari OpenStreetMap Nominatim
-        $apiUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={$latitude}&lon={$longitude}";
+    // private function getAddressFromCoordinates($latitude, $longitude)
+    // {
+    //     // API endpoint dari OpenStreetMap Nominatim
+    //     $apiUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={$latitude}&lon={$longitude}";
 
-        // Membuat koneksi cURL
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $apiUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    //     // Membuat koneksi cURL
+    //     $ch = curl_init();
+    //     curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //     curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
 
-        // Eksekusi permintaan cURL
-        $response = curl_exec($ch);
-        curl_close($ch);
+    //     // Eksekusi permintaan cURL
+    //     $response = curl_exec($ch);
+    //     curl_close($ch);
 
-        // Decode respons JSON
-        $data = json_decode($response, true);
+    //     // Decode respons JSON
+    //     $data = json_decode($response, true);
 
-        // Ambil alamat atau bagian yang sesuai dengan kebutuhan Anda
-        $alamat = $data['display_name'] ?? '';
+    //     // Ambil alamat atau bagian yang sesuai dengan kebutuhan Anda
+    //     $alamat = $data['display_name'] ?? '';
 
-        return $alamat;
-    }
+    //     return $alamat;
+    // }
 
     public function detail($id)
     {
-        $laporan = Laporan::findOrFail($id)->with(['ReportLaporan', 'BuktiLaporan', 'NotifUser', 'VoteLaporan', 'CommentLaporan', 'User'])->first();
+        // $laporan = Laporan::findOrFail($id)->with(['ReportLaporan', 'BuktiLaporan', 'NotifUser', 'VoteLaporan', 'CommentLaporan', 'User'])->first();
 
-        $laporan->alamat = $this->getAddressFromCoordinates((float) str_replace(',', '.', $laporan->lat), (float) str_replace(',', '.', $laporan->long));
+        $laporan = Laporan::with(['ReportLaporan', 'BuktiLaporan', 'NotifUser', 'VoteLaporan', 'CommentLaporan', 'User'])->where('id', $id)->first();
+        // $laporan->alamat = $this->getAddressFromCoordinates((float) str_replace(',', '.', $laporan->lat), (float) str_replace(',', '.', $laporan->long));
 
         return view('laporan_page.detail', compact('laporan'));
     }
@@ -100,31 +102,36 @@ class LaporanController extends Controller
         return redirect()->route('laporan')->with('success', 'Laporan berhasil dihapus.');
     }
 
-    public function comment($id){
-        $comments = CommentLaporan::where('laporan_id',$id)->with(['laporan','user','BuktiComment'])->get();
+    public function comment($id)
+    {
+        $comments = CommentLaporan::where('laporan_id', $id)->with(['laporan', 'user', 'BuktiComment'])->get();
         $laporanId = $id;
-        return view("laporan_page.comment", compact('comments','laporanId'));
+        return view("laporan_page.comment", compact('comments', 'laporanId'));
     }
 
-    public function createComment($id, Request $request){
-        $validated = Validator::make($request->all(),[
+    public function createComment($id, Request $request)
+    {
+        $validated = Validator::make($request->all(), [
             'comment_laporan' => 'required',
             'bukti_comments.*' => 'file|mimes:jpg,jpeg,png,bmp,gif,svg,webp,mp4,avi,mov,wmv,mkv|max:20480'
         ]);
 
-        if($validated->fails()){
+        if ($validated->fails()) {
             return redirect()->back()->withErrors($validated)->withInput();
         }
 
         $comment = new CommentLaporan();
         $comment->laporan_id = $id;
         $comment->comment_laporan = $request->comment_laporan;
-        $comment->user_id =auth()->id();
+        $comment->user_id = auth()->id();
         $comment->save();
 
-        if($request->hasFile('bukti_comments')){
-            foreach($request->file('bukti_comments') as $file){
+        if ($request->hasFile('bukti_comments')) {
+            foreach ($request->file('bukti_comments') as $file) {
+                // Store the file and get its path
                 $path = $file->store('bukti_comments', 'public');
+
+                // Create a new BuktiComment entry
                 $buktiComment = new BuktiComment();
                 $buktiComment->comment_laporan_id = $comment->id;
                 $buktiComment->bukti_comment = $path;
@@ -132,13 +139,29 @@ class LaporanController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Sccess menambahkan komentar');
-
+        return redirect()->back()->with('success', 'Sucess menambahkan komentar');
     }
 
-    public function reports($id){
+    public function reports($id)
+    {
         $reports = ReportLaporan::with(['laporan', 'user'])->where('laporan_id', $id)->get();
 
         return view('laporan_page.report', compact('reports'));
+    }
+
+    public function pendukung($id)
+    {
+        $pendukungs = VoteLaporan::with(['laporan', 'user'])->where('laporan_id', $id)->get();
+        // dd($pendukungs);
+        // $pendukung = $laporan->VoteLaporan->map(function ($vote) {
+        //     return [
+        //         'id' => $vote->id,
+        //         'user_id' => $vote->user_id,
+        //         'user_name' => $vote->user->nama,
+        //         'user_email' => $vote->user->email
+        //     ];
+        // });
+
+        return view('laporan_page.pendukung', compact('pendukungs'));
     }
 }

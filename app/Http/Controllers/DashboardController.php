@@ -16,9 +16,27 @@ class DashboardController extends Controller
         $sedangDiatasi = Laporan::where('status_laporan', 'sedang-diatasi')->count();
         $perluDukungan = Laporan::where('status_laporan', 'perlu-dukungan')->count();
 
-        $laporan = Laporan::with('BuktiLaporan')->where('status_laporan', 'perlu-diatasi')->get();
+        $laporans = Laporan::with('BuktiLaporan')->where('status_laporan', 'perlu-diatasi')->get();
+        $laporan = $laporans->map(function ($laporan) {
+
+            // $latitude = (float) str_replace(',', '.', $laporan->lat);
+            // $longitude = (float) str_replace(',', '.', $laporan->long);
+
+            // $alamat = $this->getAddressFromCoordinates($latitude, $longitude);
+            $imagePath = asset('storage/' . $laporan->buktiLaporan[0]->bukti_laporan);
+
+            return [
+                'id' => $laporan->id,
+                'judul_laporan' => $laporan->judul_laporan,
+                'deskripsi_laporan' => $laporan->deskripsi_laporan,
+                'image_laporan' => $imagePath,
+                'status_laporan' => $laporan->status_laporan,
+                'alamat' => $laporan->alamat_laporan,
+                'jumlahPendukung' => $laporan->VoteLaporan ? $laporan->VoteLaporan->count() : 0,
+            ];
+        });
         // $laporan=$laporan->BuktiLaporan;
-        
+
         $laporanPerBulan = Laporan::selectRaw('COUNT(*) as jumlah_laporan, MONTH(created_at) as bulan')
             ->groupBy('bulan')
             ->get()
@@ -53,8 +71,6 @@ class DashboardController extends Controller
         });
 
         // return response()->json($laporan);
-        return view('dashboard_page.dashboard', compact('semuaLaporan', 'sudahDiatasi', 'perluDiatasi', 'months', 'perluDukungan', 'sedangDiatasi','laporan'));
+        return view('dashboard_page.dashboard', compact('semuaLaporan', 'sudahDiatasi', 'perluDiatasi', 'months', 'perluDukungan', 'sedangDiatasi', 'laporan'));
     }
-
-
 }

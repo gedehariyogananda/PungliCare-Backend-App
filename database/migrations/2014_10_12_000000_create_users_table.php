@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('phone_number_verified_at')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('roles', ['kapolsek', 'masyarakat-umum'])->default('masyarakat-umum');
+            $table->enum('roles', ['dishub', 'masyarakat-umum'])->default('masyarakat-umum');
             $table->rememberToken();
             $table->string('profile_photo_path')->nullable();
             $table->timestamps();

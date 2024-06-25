@@ -20,7 +20,7 @@ class LoginController extends Controller
         ]);
 
         if (auth()->attempt($request->only('email', 'password'))) {
-            if (auth()->user()->roles == 'kapolsek') {
+            if (auth()->user()->roles == 'dishub') {
                 return redirect()->route('dashboard');
             } else {
                 return back()->with('error', 'Not Have Access');
