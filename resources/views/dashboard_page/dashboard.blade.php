@@ -24,6 +24,7 @@
             margin-right: 10px;
         }
 
+        
         .custom-card-icon i {
             color: #ff6f61;
             line-height: 1;
@@ -44,7 +45,7 @@
     @endpush
 
     <x-slot name="pages">Dashboard</x-slot>
-    <x-slot name="pagesInit">Selamat datang, polsek Sukolilo!</x-slot>
+    <x-slot name="pagesInit">Selamat datang Admin!</x-slot>
 
     <section class="section">
         <div class="container">
