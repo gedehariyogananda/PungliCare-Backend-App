@@ -1,4 +1,4 @@
-<x-maz-sidebar :href="route('dashboard')" :logo="asset('images/dishub/dishubxpunglicare.png')">
+<x-maz-sidebar :href="route('dashboard')" :logo="asset('images/logo/PungliCare.png')">
     <!-- Sidebar Menu Items -->
     <x-maz-sidebar-item name="Dashboard" :link="route('dashboard')" icon="bi bi-grid-fill"></x-maz-sidebar-item>
     <x-maz-sidebar-item name="Pemantauan Map" :link="route('pemantauan')" icon="bi bi-map-fill"></x-maz-sidebar-item>

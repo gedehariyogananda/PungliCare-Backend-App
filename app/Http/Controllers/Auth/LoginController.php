@@ -14,12 +14,14 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        // return response()->json($request);
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
         if (auth()->attempt($request->only('email', 'password'))) {
+            // return response()->json(auth()->user()->roles);
             if (auth()->user()->roles == 'dishub') {
                 return redirect()->route('dashboard');
             } else {
