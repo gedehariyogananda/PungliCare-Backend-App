@@ -58,21 +58,21 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Password lama dan password baru tidak boleh sama'
-            ]);
+            ], 400);
         }
 
         if ($request->confirm_password !== $request->new_password){
             return response()->json([
                 'status' => "error",
                 'message'=> "Confirm password dengan password baru harus sama"
-            ]);
+            ], 400);
         }
 
         if(!Hash::check($request->old_password, auth()->user()->password)){
             return response()->json([
                 'status' => 'error',
                 'message' => 'Password lama tidak sesuai'
-            ]);
+            ], 400);
         }
 
         $user = User::findOrFail(auth()->user()->id);
@@ -87,7 +87,7 @@ class UserController extends Controller
         return response()->json([
             'status' =>'error',
             'message'=> $e->getMessage()
-        ]);
+        ], 500);
        }
     }
 
