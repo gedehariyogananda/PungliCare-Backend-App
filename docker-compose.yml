@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    image: punglicare
+    container_name: punglicare
+    restart: unless-stopped
+    tty: true
+    environment: 
+      SERVICE_NAME: app
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+      - ./storage/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - /var/www/node_modules
+    networks:
+      - punglicare_network
+
+  webserver:
+    image: nginx:alpine
+    container_name: nginx-container
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www
+      - ./storage/:/etc/nginx/conf.d/
+    networks:
+      - punglicare_network
+
+  db:
+    image: mysql:5.7
+    platform: linux/amd64
+    container_name: mysql-container
+    restart: always
+    tty: true
+    ports:
+      - "3306:3306"
+    volumes:
+      - lbdata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_PASSWORD: password
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - punglicare_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    platform: linux/amd64
+    container_name: phpmyadmin-container
+    links:
+      - db
+    restart: always
+    ports:
+      - "8081:80"
+    networks:
+      - punglicare_network
+
+networks:
+  punglicare_network:
+    driver: bridge
+
+volumes:
+  lbdata:
+    driver: local

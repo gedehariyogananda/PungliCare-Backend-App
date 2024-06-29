@@ -5,7 +5,8 @@
         <div class="sidebar-header position-relative">
             {{-- <div class="d-flex justify-content-between align-items-center"> --}}
                 <div class="logo">
-                    <a href="{{ $href }}"><img src="{{ $logo }}" alt="Logo" srcset=""></a>
+                    <a href="{{ $href }}"><img style="width: 150px; height: 30px;" src="{{ $logo }}" alt="Logo"
+                            srcset=""></a>
                 </div>
                 {{--
             </div> --}}

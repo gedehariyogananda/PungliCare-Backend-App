@@ -47,6 +47,7 @@ Route::controller(ServiceTwilloController::class)->group(function () {
 
 Route::controller(HomePageController::class)->group(function () {
     Route::get('/name/user', 'name');
+    Route::get('/detail/user', 'detailUser');
     Route::get('/laporan/terdekat/{latitude}/{longitude}', 'laporanTerdekat');
     Route::get('/notif/user', 'notifUser');
 });
@@ -73,4 +74,6 @@ Route::controller(LaporanController::class)->group(function () {
     // buat laporan 
     Route::post('/laporan/buat-laporan/{lat}/{long}', 'buatLaporan');
 
+    // service convert alamat from lat long 
+    Route::get('/laporan/convert-alamat/{lat}/{long}', 'convertAlamat');
 });
