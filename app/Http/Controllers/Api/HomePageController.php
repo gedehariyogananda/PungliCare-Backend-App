@@ -68,6 +68,14 @@ class HomePageController extends Controller
         ]);
     }
 
+    public function detailUser() {
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail user berhasil diambil',
+            'data' => auth()->user()
+        ]);
+    }
+
     public function notifUser()
     {
         $userInit = auth()->user();

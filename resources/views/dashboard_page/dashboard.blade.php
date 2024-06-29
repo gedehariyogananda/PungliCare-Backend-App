@@ -82,6 +82,7 @@
             margin-right: 10px;
         }
 
+        
         .custom-card-icon i {
             color: #ff6f61;
             line-height: 1;
