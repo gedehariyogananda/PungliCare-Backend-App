@@ -27,9 +27,18 @@ class UserController extends Controller
        try{
         $userId = auth()->user()->id;
         $laporans = VoteLaporan::with('laporan')->where('user_id', $userId)->get();
-        $result = $laporans->map(function($laporan){
-            return $laporan->laporan;
-        });
+        $result = $laporans->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'id_laporan' => $item->laporan->id,
+                'judul_laporan' => $item->laporan->judul_laporan,
+                'deskripsi_laporan' => $item->laporan->deskripsi_laporan,
+                'alamat_laporan' => $item->laporan->alamat_laporan,
+                'status_laporan' => $item->laporan->status_laporan,
+                'bukti_laporan' => $item->laporan->BuktiLaporan ? $item->laporan->BuktiLaporan[0]->bukti_laporan : null,
+                'pendukung' => $item->laporan->VoteLaporan ? $item->laporan->VoteLaporan->count() : 0,
+            ];
+        });;
         return response()->json([
             'status' => 'success',
             'data' => $result
