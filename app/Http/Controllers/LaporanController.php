@@ -35,7 +35,7 @@ class LaporanController extends Controller
         }
 
         $laporans = $query->get();
-       
+
         $semuaData = $laporans->map(function ($laporan) {
 
             // $latitude = (float) str_replace(',', '.', $laporan->lat);
@@ -109,6 +109,12 @@ class LaporanController extends Controller
         $laporan->status_laporan = $request->input('status_laporan');
 
         $laporan->save();
+
+        if ($laporan->status_laporan == 'sudah-teratasi') {
+            $laporan->update([
+                'tanggal_teratasi' => now()
+            ]);
+        }
 
         return redirect()->route('laporan.detail', $id)->with('success', 'Status laporan berhasil diupdate.');
     }
@@ -186,12 +192,13 @@ class LaporanController extends Controller
         return view('laporan_page.pendukung', compact('pendukungs'));
     }
 
-    public function exportToCSV(Request $request){
+    public function exportToCSV(Request $request)
+    {
         $status = $request->input('status');
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
 
         // return response()->json($start_date);
-        return Excel::download(new LaporanExport($status, $start_date, $end_date),'laporan.xlsx');
+        return Excel::download(new LaporanExport($status, $start_date, $end_date), 'laporan.xlsx');
     }
 }

@@ -39,7 +39,7 @@ class ServiceTwilloController extends Controller
             $validOtp = $this->otpService->generateOtp();
 
             // service twillo forbiden
-            // $this->otpService->sendOtp($formattedPhone, $validOtp);
+            $this->otpService->sendOtp($formattedPhone, $validOtp);
 
             $temporaryUser = User::create([
                 'nama' => $request->nama,
@@ -156,7 +156,7 @@ class ServiceTwilloController extends Controller
                         'is_verifikasi' => false,
                         'token' => $token,
                         'kode_otp' => $validOtp,
-                    
+
                     ],
                 ], 201);
             }
@@ -184,7 +184,9 @@ class ServiceTwilloController extends Controller
 
         try {
             $validOtp = $this->otpService->generateOtp();
-            
+            // service twillo forbidden
+            // $this->otpService->sendOtp($user->nomor_telepon, $validOtp);
+
             $updateOtp = User::where('id', $user->id)->update(['kode_otp' => $validOtp]);
 
             if ($updateOtp) {
@@ -216,6 +218,4 @@ class ServiceTwilloController extends Controller
             'message' => 'Successfully logged out',
         ], 200);
     }
-
-    
 }

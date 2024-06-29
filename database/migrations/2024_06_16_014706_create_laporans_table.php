@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('judul_laporan');
             $table->text('deskripsi_laporan');
             $table->enum('status_laporan', ['perlu-dukungan', 'perlu-diatasi', 'sedang-diatasi', 'sudah-teratasi']);
+            $table->dateTime('tanggal_teratasi')->nullable();
             $table->timestamps();
         });
     }

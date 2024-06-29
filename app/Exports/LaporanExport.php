@@ -14,31 +14,32 @@ class LaporanExport implements FromCollection, WithHeadings, WithStyles, WithMap
     protected $status;
     protected $startDate;
     protected $endDate;
-    public function __construct($status=null, $startDate=null, $endDate=null){
+    public function __construct($status = null, $startDate = null, $endDate = null)
+    {
         $this->status = $status;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
     }
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         $query = Laporan::query();
 
-        if($this->status){
+        if ($this->status) {
             $query->where('status_laporan', $this->status);
         }
 
-        if($this->startDate){
-            $query->where('created_at' ,'>=', $this->startDate);
+        if ($this->startDate) {
+            $query->where('created_at', '>=', $this->startDate);
         }
 
-        if($this->endDate){
-            $query->where('created_at','<=', $this->endDate );
+        if ($this->endDate) {
+            $query->where('created_at', '<=', $this->endDate);
         }
 
-        return $query->get(['judul_laporan', 'alamat_laporan', 'status_laporan','created_at']);
+        return $query->get(['judul_laporan', 'alamat_laporan', 'status_laporan', 'created_at', 'tanggal_teratasi']);
     }
 
     public function headings(): array
@@ -48,17 +49,20 @@ class LaporanExport implements FromCollection, WithHeadings, WithStyles, WithMap
             'Judul Laporan',
             'Tempat Kejadian',
             'Status',
-            'Tanggal Pelaporan'
+            'Tanggal Pelaporan',
+            'Tanggal Teratasi'
         ];
     }
 
-    public function styles(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet){
+    public function styles(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet)
+    {
         return [
-            1 => ['font'=>['bold'=>true]]
+            1 => ['font' => ['bold' => true]]
         ];
     }
 
-    public function map($laporan) :array{
+    public function map($laporan): array
+    {
         static $row = 0;
         $row++;
 
@@ -67,7 +71,9 @@ class LaporanExport implements FromCollection, WithHeadings, WithStyles, WithMap
             $laporan->judul_laporan,
             $laporan->alamat_laporan,
             $laporan->status_laporan,
-            Carbon::parse($laporan->created_at)->translatedFormat('d F Y')
+            Carbon::parse($laporan->created_at)->translatedFormat('d F Y'),
+            $laporan->tanggal_teratasi ? $laporan->tanggal_teratasi : "Belum Teratasi",
+            // $laporan->tanggal_teratasi ? $laporan->tanggal_teratasi->format('d F Y') : "Belum Teratasi"
         ];
     }
 }
