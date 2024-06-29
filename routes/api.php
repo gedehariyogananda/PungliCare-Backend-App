@@ -32,6 +32,7 @@ Route::controller(ServiceTwilloController::class)->group(function () {
 
 Route::controller(HomePageController::class)->group(function () {
     Route::get('/name/user', 'name');
+    Route::get('/detail/user', 'detailUser');
     Route::get('/laporan/terdekat/{latitude}/{longitude}', 'laporanTerdekat');
     Route::get('/notif/user', 'notifUser');
 });
