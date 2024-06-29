@@ -2,20 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LaporanExport;
 use App\Models\BuktiComment;
 use App\Models\Laporan;
 use App\Models\CommentLaporan;
 use App\Models\ReportLaporan;
 use App\Models\VoteLaporan;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $laporans = Laporan::with('BuktiLaporan', 'ReportLaporan', 'VoteLaporan')->get();
+        if ($request->query('action') == 'export') {
+            return $this->exportToCSV($request);
+        }
+        $query = Laporan::with('BuktiLaporan', 'ReportLaporan', 'VoteLaporan');
+
+        if ($request->has('status') && $request->query('status') != '') {
+            $query->where('status_laporan', $request->query('status'));
+        }
+
+        if ($request->has('start_date') && $request->query('start_date') != '') {
+            $query->where('created_at', '>=', $request->query('start_date'));
+        }
+
+        if ($request->has('end_date') && $request->query('end_date') != '') {
+            $query->where('created_at', '<=', $request->query('end_date'));
+        }
+
+        $laporans = $query->get();
+       
         $semuaData = $laporans->map(function ($laporan) {
 
             // $latitude = (float) str_replace(',', '.', $laporan->lat);
@@ -111,6 +131,7 @@ class LaporanController extends Controller
 
     public function createComment($id, Request $request)
     {
+        // return response()->json($request->query('action'));
         $validated = Validator::make($request->all(), [
             'comment_laporan' => 'required',
             'bukti_comments.*' => 'file|mimes:jpg,jpeg,png,bmp,gif,svg,webp,mp4,avi,mov,wmv,mkv|max:20480'
@@ -163,5 +184,14 @@ class LaporanController extends Controller
         // });
 
         return view('laporan_page.pendukung', compact('pendukungs'));
+    }
+
+    public function exportToCSV(Request $request){
+        $status = $request->input('status');
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
+
+        // return response()->json($start_date);
+        return Excel::download(new LaporanExport($status, $start_date, $end_date),'laporan.xlsx');
     }
 }

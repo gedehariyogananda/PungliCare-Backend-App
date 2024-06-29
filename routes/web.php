@@ -44,5 +44,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::post('comments/{id}', 'createComment')->name('comment.create');
         Route::get('reports/{id}', 'reports')->name('laporan.reports');
         Route::get('/pendukung/{id}', 'pendukung')->name('laporan.pendukung');
+        Route::get('export', 'exportToCSV')->name('laporan.export');
     });
 });
