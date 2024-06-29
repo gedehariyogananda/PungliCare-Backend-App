@@ -68,6 +68,13 @@ class UserController extends Controller
             ]);
         }
 
+        if(!Hash::check($request->old_password, auth()->user()->password)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Password lama tidak sesuai'
+            ]);
+        }
+
         $user = User::findOrFail(auth()->user()->id);
         $user->password = Hash::make($request->new_password);
         $user->save();
