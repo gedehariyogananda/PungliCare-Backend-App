@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\ServiceTwilloController;
+use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\HomePageController;
 use App\Http\Controllers\Api\LaporanController;
+use App\Http\Controllers\Api\UserController;
+use App\Mail\ForgotPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Jetstream\Rules\Role;
@@ -21,6 +24,18 @@ use Laravel\Jetstream\Rules\Role;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Route::middleware(['auth:sanctum'])->group(function() {
+    Route::controller(UserController::class)->group(function() {
+        Route::get('laporan-dukungan', 'getLaporanDukungan');
+        Route::put('change-password','changePassword');
+    });
+
+    Route::controller(ForgotPasswordController::class)->group(function(){
+        Route::post('forgot-password/send-otp', 'sendOtp');
+        Route::post('forgot-password/verify-otp','verifyOtp');
+    });
+
 
 Route::controller(ServiceTwilloController::class)->group(function () {
     Route::post('login', 'login');
