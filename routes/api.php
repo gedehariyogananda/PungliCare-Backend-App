@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::controller(UserController::class)->group(function() {
         Route::get('laporan-dukungan', 'getLaporanDukungan');
         Route::put('change-password','changePassword');
+        Route::put('edit-user','editUser');
     });
 
     Route::controller(ForgotPasswordController::class)->group(function(){

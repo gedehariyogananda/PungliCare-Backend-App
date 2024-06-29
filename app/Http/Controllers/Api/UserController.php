@@ -101,4 +101,30 @@ class UserController extends Controller
     }
 
 
+    public function editUser(Request $request){
+        try {
+            $validated = Validator::make($request->all(), [
+                'nama' => 'required|string',
+            ]);
+
+            if ($validated->fails()) {
+                return response()->json($validated->errors(), 400);
+            }
+
+            $user = User::findOrFail(auth()->user()->id);
+            $user->nama = $request->nama;
+            $user->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Nama berhasil dirubah'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' =>'error',
+                'message'=> $e->getMessage()
+            ], 500);
+        }
+    }
+
 }
