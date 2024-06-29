@@ -12,6 +12,8 @@ use App\Services\ConvertAlamatService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
+use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 
 class LaporanController extends Controller
 {
@@ -581,14 +583,43 @@ class LaporanController extends Controller
 
             foreach ($request->bukti_laporan as $bukti) {
                 $file = $bukti['bukti_laporan'];
-                $extension = $file->getClientOriginalExtension();
-                $buktiLaporanName = time() . '-' . rand(1, 10) . '.' . $extension;
-                $file->storeAs('public/bukti-laporan', $buktiLaporanName);
+            $extension = $file->getClientOriginalExtension();
+            $buktiLaporanName = time() . '-' . rand(1, 10) . '.' . $extension;
 
-                BuktiLaporan::create([
-                    'laporan_id' => $laporan->id,
-                    'bukti_laporan' => 'bukti-laporan/' . $buktiLaporanName,
-                ]);
+            // Tentukan path penyimpanan sesuai dengan jenis file
+            if (strpos($file->getMimeType(), 'image') !== false) {
+                // Jika file adalah gambar
+                $destinationPath = 'public/bukti-laporan/';
+                
+                // Proses kompresi gambar menggunakan Intervention Image
+                $compressedImage = Image::make($file->getRealPath());
+                $compressedImage->resize(800, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->encode('jpg', 75); // Mengompresi gambar dengan format JPG dan kualitas 75%
+                
+                // Simpan gambar ke storage
+                $compressedImage->save(storage_path('app/' . $destinationPath . $buktiLaporanName));
+            } elseif (strpos($file->getMimeType(), 'video') !== false) {
+                // Jika file adalah video
+                $destinationPath = 'public/bukti-laporan/videos/';
+
+                // Simpan video asli
+                $file->move(storage_path('app/' . $destinationPath), $buktiLaporanName);
+
+                // Kompresi video menggunakan FFMpeg
+                FFMpeg::fromDisk('public')
+                    ->open($destinationPath . $buktiLaporanName)
+                    ->export()
+                    ->toDisk('public')
+                    ->inFormat(new \FFMpeg\Format\Video\X264('libmp3lame', 'libx264'))
+                    ->save($destinationPath . 'compressed/' . $buktiLaporanName);
+            }
+
+            // Simpan record ke database
+            BuktiLaporan::create([
+                'laporan_id' => $laporan->id,
+                'bukti_laporan' => $destinationPath . $buktiLaporanName,
+            ]);
             }
 
             return response()->json([

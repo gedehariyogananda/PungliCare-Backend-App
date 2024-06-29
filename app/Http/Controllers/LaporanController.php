@@ -8,10 +8,14 @@ use App\Models\Laporan;
 use App\Models\CommentLaporan;
 use App\Models\ReportLaporan;
 use App\Models\VoteLaporan;
+
+use Intervention\Image\Facades\Image;
+use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+
 
 class LaporanController extends Controller
 {
@@ -155,14 +159,37 @@ class LaporanController extends Controller
 
         if ($request->hasFile('bukti_comments')) {
             foreach ($request->file('bukti_comments') as $file) {
-                // Store the file and get its path
-                $path = $file->store('bukti_comments', 'public');
-
-                // Create a new BuktiComment entry
-                $buktiComment = new BuktiComment();
-                $buktiComment->comment_laporan_id = $comment->id;
-                $buktiComment->bukti_comment = $path;
-                $buktiComment->save();
+                $filename = time() . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $destinationPath = 'public/bukti_comments/';
+    
+                if (strpos($file->getMimeType(), 'image') !== false) {
+                    // Jika file adalah gambar
+                    $compressedImage = Image::make($file)
+                        ->resize(800, null, function ($constraint) {
+                            $constraint->aspectRatio();
+                        })
+                        ->encode('jpg', 75); // Mengompresi gambar dengan format JPG dan kualitas 75%
+    
+                    // Simpan gambar ke storage
+                    $compressedImage->storeAs($destinationPath, $filename);
+                } elseif (strpos($file->getMimeType(), 'video') !== false) {
+                    // Jika file adalah video
+                    $file->move(storage_path('app/' . $destinationPath), $filename);
+    
+                    // Kompresi video menggunakan FFMpeg
+                    FFMpeg::fromDisk('public')
+                        ->open($destinationPath . $filename)
+                        ->export()
+                        ->toDisk('public')
+                        ->inFormat(new \FFMpeg\Format\Video\X264('libmp3lame', 'libx264'))
+                        ->save($destinationPath . 'compressed/' . $filename);
+                }
+    
+                // Simpan record ke database
+                BuktiComment::create([
+                    'comment_laporan_id' => $comment->id,
+                    'bukti_comment' => $destinationPath . $filename,
+                ]);
             }
         }
 

@@ -10,10 +10,14 @@
     "require": {
         "php": "^7.3|^8.0",
         "fruitcake/laravel-cors": "^2.0",
+        "intervention/image": "^2",
         "laravel/framework": "^v9.2.0",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
         "maatwebsite/excel": "^3.1",
+        "pbmedia/laravel-ffmpeg": "^8.3",
+        "php-ffmpeg/php-ffmpeg": "^1.2",
+        "spatie/laravel-image-optimizer": "^1.8",
         "twilio/sdk": "^8.1",
         "tymon/jwt-auth": "^2.1"
     },
