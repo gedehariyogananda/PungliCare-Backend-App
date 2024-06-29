@@ -411,7 +411,6 @@ class LaporanController extends Controller
                 ($radius * acos(cos(radians(?)) * cos(radians(`lat`)) * cos(radians(`long`) - radians(?)) + sin(radians(?)) * sin(radians(`lat`)))) AS distance",
                 [$lat, $long, $lat]
             )
-                ->where('status_laporan', 'perlu-dukungan')
                 ->having("distance", "<", 5)
                 ->orderBy("distance", "asc")
                 ->with(['BuktiLaporan:id,laporan_id,bukti_laporan'])
@@ -422,7 +421,7 @@ class LaporanController extends Controller
                     ($radius * acos(cos(radians(?)) * cos(radians(`lat`)) * cos(radians(`long`) - radians(?)) + sin(radians(?)) * sin(radians(`lat`)))) AS distance",
                 [$lat, $long, $lat]
             )
-                ->where('status_laporan', 'perlu-dukungan')
+                ->where('status_laporan', $status_laporan)
                 ->having("distance", "<", 5)
                 ->orderBy("distance", "asc")
                 ->with(['BuktiLaporan:id,laporan_id,bukti_laporan'])
