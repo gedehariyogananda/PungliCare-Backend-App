@@ -147,9 +147,9 @@
             <textarea class="form-control" rows="1" name="comment_laporan" id="comment"
                 placeholder="Tambahkan Komentar..." required></textarea>
             <input type="file" name="bukti_comments[]" multiple>
-        </form>
     </div>
     <button type="submit" class="btn btn-primary mt-2">Post</button>
+    </form>
     <br><br>
 
     {{-- modal create --}}
