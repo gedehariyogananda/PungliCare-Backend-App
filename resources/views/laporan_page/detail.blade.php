@@ -92,38 +92,30 @@
     <section class="section">
         <div class="row">
             <div class="mx-auto">
-                <div class="carousel-container">
-                    <div class="carousel-content">
+                <div id="carouselExample" class="carousel slide">
+                    <div class="carousel-inner">
                         @foreach ($laporan->BuktiLaporan as $image)
-                        <div class="carousel-slide">
                             @if (str_contains($image->bukti_laporan, ".mp4"))
-                            <video controls class="video-fluid">
-                                <source src="{{ asset('storage/' . $image->bukti_laporan) }}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
+                                <div class="carousel-item">
+                                    <video controls autoplay src="{{ asset('storage/' . $image->bukti_laporan) }}" class="d-block w-100 video-fluid" alt="...">
+                                  </div>
                             @else
-                            <img src="{{ asset('storage/' . $image->bukti_laporan) }}" class="img-fluid"
-                                alt="Bukti Laporan">
+                                <div class="carousel-item active">
+                                <img src="{{ asset('storage/' . $image->bukti_laporan) }}" class="d-block w-100 img-fluid active" alt="">
+                                </div>
                             @endif
-                        </div>
-                        @endforeach
-                    </div>
-                    <!-- Controls -->
-                    <button class="carousel-control-prev" onclick="prevSlide()">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
-                            </path>
-                        </svg>
+                    @endforeach
+                      
+                 </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
                     </button>
-                    <button class="carousel-control-next" onclick="nextSlide()">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                            </path>
-                        </svg>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
                     </button>
-                </div>
+                  </div>
             </div>
         </div>
         <div class="container d-flex justify-content-between align-items-start">
@@ -237,26 +229,4 @@
         {{-- akhir modal delete --}}
     </section>
 
-    @push('scripts')
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.carousel-slide');
-
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.style.transform = `translateX(${(i - index) * 100}%)`;
-            });
-        }
-
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % slides.length;
-            showSlide(currentSlide);
-        }
-
-        function prevSlide() {
-            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-            showSlide(currentSlide);
-        }
-    </script>
-    @endpush
 </x-app-layout>

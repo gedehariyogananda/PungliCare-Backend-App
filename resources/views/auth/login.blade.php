@@ -13,7 +13,7 @@
                 {{ session('error') }}
             </div>
             @endif
-            <img src="/images/logo/PungliCare.png" alt="logo" class="img-fluid mb-4 mx-auto d-block"
+            <img src="/images/dishub/dishubxpunglicare.png" alt="logo" class="img-fluid mb-4 mx-auto d-block"
                 style="max-width: 350px;">
 
             <form action="{{ route('login') }}" method="POST">
