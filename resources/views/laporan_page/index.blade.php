@@ -72,48 +72,29 @@
     @endif
 
     <section class="section">
-        <div class="w-full mb-4">
-            <div class="d-flex justify-content-end">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-secondary dropdown-toggle rounded-pill"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Semua Laporan
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Separated link</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
         <div class="container">
             <div class="flex my-3">
-                    <div class="flex-item mx-4">
-                        <form action="{{ route('laporan') }}" method="GET">
-                            @csrf
+                <div class="flex-item mx-4">
+                    <form action="{{ route('laporan') }}" method="GET">
+                        @csrf
                         <label for="date" name="start-date" class="form-label">Tanggal Mulai : </label>
                         <input type="date" id="date" class="form-control" name="start_date">
                         <label for="date" name="start-date" class="form-label">Tanggal Selesai : </label>
                         <input type="date" id="date" class="form-control" name="end_date">
-                    </div>
-                    <div class="flex-item">
-                        <label for="status" class="form-label">Status :</label>
-                        <select class="form-select" name="status" aria-label="Default select example">
-                            <option value="">Semua Laporan</option>
-                            <option value="perlu-dukungan">Perlu Dukungan</option>
-                            <option value="perlu-diatasi">Perlu Diatasi</option>
-                            <option value="sedang-diatasi">Sedang Diatasi</option>
-                            <option value="sudah-teratasi">Sudah Teratasi</option>
-                          </select>
-                          <button type="submit" class="btn btn-primary mt-4" name="action" value="filter">Terapkan</button>
-                          <button type="submit" class="btn btn-success mt-4" name="action" value="export">Export</button>
-                        </form>
-                    </div>
+                </div>
+                <div class="flex-item">
+                    <label for="status" class="form-label">Status :</label>
+                    <select class="form-select" name="status" aria-label="Default select example">
+                        <option value="">Semua Laporan</option>
+                        <option value="perlu-dukungan">Perlu Dukungan</option>
+                        <option value="perlu-diatasi">Perlu Diatasi</option>
+                        <option value="sedang-diatasi">Sedang Diatasi</option>
+                        <option value="sudah-teratasi">Sudah Teratasi</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary mt-4" name="action" value="filter">Terapkan</button>
+                    <button type="submit" class="btn btn-success mt-4" name="action" value="export">Export</button>
+                    </form>
+                </div>
             </div>
             <div class="row">
                 @foreach($semuaData as $data)
