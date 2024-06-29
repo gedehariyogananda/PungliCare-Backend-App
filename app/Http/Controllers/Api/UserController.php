@@ -108,10 +108,17 @@ class UserController extends Controller
             ]);
 
             if ($validated->fails()) {
-                return response()->json($validated->errors(), 400);
+                return response()->json($validated->errors(), 403);
             }
 
             $user = User::findOrFail(auth()->user()->id);
+            if($user->nama === $request->nama){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Nama tidak boleh sama dengan nama sebelumnya'
+                ], 400);
+            }
+            
             $user->nama = $request->nama;
             $user->save();
 
