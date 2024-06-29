@@ -159,9 +159,8 @@ class LaporanController extends Controller
 
         if ($request->hasFile('bukti_comments')) {
             foreach ($request->file('bukti_comments') as $file) {
-                $filename = time() . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $destinationPath = 'public/bukti_comments/';
-    
+                $destinationPath = 'storage/bukti_comments/';
+        
                 if (strpos($file->getMimeType(), 'image') !== false) {
                     // Jika file adalah gambar
                     $compressedImage = Image::make($file)
@@ -169,13 +168,20 @@ class LaporanController extends Controller
                             $constraint->aspectRatio();
                         })
                         ->encode('jpg', 75); // Mengompresi gambar dengan format JPG dan kualitas 75%
-    
+        
                     // Simpan gambar ke storage
-                    $compressedImage->storeAs($destinationPath, $filename);
+                    $path = $file->store('bukti_comments', 'public');
+        
+                    // Simpan record ke database
+                    BuktiComment::create([
+                        'comment_laporan_id' => $comment->id,
+                        'bukti_comment' => $path,
+                    ]);
                 } elseif (strpos($file->getMimeType(), 'video') !== false) {
                     // Jika file adalah video
-                    $file->move(storage_path('app/' . $destinationPath), $filename);
-    
+                    $filename = $file->getClientOriginalName();
+                    $file->move(public_path('storage/bukti_comments/'), $filename);
+        
                     // Kompresi video menggunakan FFMpeg
                     FFMpeg::fromDisk('public')
                         ->open($destinationPath . $filename)
@@ -183,13 +189,13 @@ class LaporanController extends Controller
                         ->toDisk('public')
                         ->inFormat(new \FFMpeg\Format\Video\X264('libmp3lame', 'libx264'))
                         ->save($destinationPath . 'compressed/' . $filename);
+        
+                    // Simpan record ke database
+                    BuktiComment::create([
+                        'comment_laporan_id' => $comment->id,
+                        'bukti_comment' => $destinationPath . 'compressed/' . $filename,
+                    ]);
                 }
-    
-                // Simpan record ke database
-                BuktiComment::create([
-                    'comment_laporan_id' => $comment->id,
-                    'bukti_comment' => $destinationPath . $filename,
-                ]);
             }
         }
 
