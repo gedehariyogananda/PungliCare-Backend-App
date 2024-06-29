@@ -208,52 +208,29 @@ class DatabaseSeeder extends Seeder
         // buatkan bukti laporan dari laporan user_id 7 sampe 11 sama dengan buktilaporan dibawah ini samakan yaitu bukti-laporan/laporan1.1.png dan bukti-laporan/laporan1.2.mp4
         BuktiLaporan::create([
             'laporan_id' => 4,
-            'bukti_laporan' => "bukti-laporan/laporan1.1.png",
+            'bukti_laporan' => "bukti-laporan/parkir6.jpg",
         ]);
 
-        BuktiLaporan::create([
-            'laporan_id' => 4,
-            'bukti_laporan' => "bukti-laporan/laporan1.2.mp4",
-        ]);
 
         BuktiLaporan::create([
             'laporan_id' => 5,
-            'bukti_laporan' => "bukti-laporan/laporan1.1.png",
-        ]);
-
-        BuktiLaporan::create([
-            'laporan_id' => 5,
-            'bukti_laporan' => "bukti-laporan/laporan1.2.mp4",
+            'bukti_laporan' => "bukti-laporan/parkir5.jpg",
         ]);
 
         BuktiLaporan::create([
             'laporan_id' => 6,
-            'bukti_laporan' => "bukti-laporan/laporan1.1.png",
-        ]);
-
-        BuktiLaporan::create([
-            'laporan_id' => 6,
-            'bukti_laporan' => "bukti-laporan/laporan1.2.mp4",
+            'bukti_laporan' => "bukti-laporan/parkir4.jpg",
         ]);
 
         BuktiLaporan::create([
             'laporan_id' => 7,
-            'bukti_laporan' => "bukti-laporan/laporan1.1.png",
+            'bukti_laporan' => "bukti-laporan/gambar3.jpg",
         ]);
 
-        BuktiLaporan::create([
-            'laporan_id' => 7,
-            'bukti_laporan' => "bukti-laporan/laporan1.2.mp4",
-        ]);
 
         BuktiLaporan::create([
             'laporan_id' => 8,
-            'bukti_laporan' => "bukti-laporan/laporan1.1.png",
-        ]);
-
-        BuktiLaporan::create([
-            'laporan_id' => 8,
-            'bukti_laporan' => "bukti-laporan/laporan1.2.mp4",
+            'bukti_laporan' => "bukti-laporan/parkir2.jpg",
         ]);
 
         // BuktiLaporan::create([
@@ -329,12 +306,7 @@ class DatabaseSeeder extends Seeder
 
         BuktiLaporan::create([
             'laporan_id' => 3,
-            'bukti_laporan' => "bukti-laporan/laporan2.1.jpg",
-        ]);
-
-        BuktiLaporan::create([
-            'laporan_id' => 3,
-            'bukti_laporan' => "bukti-laporan/laporan2.2.mp4",
+            'bukti_laporan' => "bukti-laporan/parkir1.jpeg",
         ]);
 
         VoteLaporan::create([

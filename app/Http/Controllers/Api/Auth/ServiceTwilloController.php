@@ -72,7 +72,7 @@ class ServiceTwilloController extends Controller
 
     public function verifikasiOtpSms(Request $request)
     {
-        $authUserInit = auth()->user()->id;
+        $authUserInit = auth()->user();
         $validator = Validator::make($request->all(), [
             'kode_otp' => 'required|string',
         ]);
@@ -82,33 +82,26 @@ class ServiceTwilloController extends Controller
         }
 
         try {
-            $user = User::where('nomor_telepon', $request->phone_number)->where('id', $authUserInit)->first();
+            $user = User::where('id', $authUserInit->id)->first();
 
-            if ($user) {
-                if ($user->kode_otp == $request->kode_otp) {
-                    $user->phone_number_verified_at = now();
-                    $user->save();
+            if ($user->kode_otp == $request->kode_otp) {
+                $user->phone_number_verified_at = now();
+                $user->save();
 
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Nomor telepon berhasil diverifikasi',
-                        'data' => [
-                            'nomor_telepon' => $user->nomor_telepon,
-                            'phone_number_verified_at' => $user->phone_number_verified_at,
-                            'is_verifikasi' => true,
-                        ]
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Kode OTP tidak valid',
-                    ], 400);
-                }
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Nomor telepon berhasil diverifikasi',
+                    'data' => [
+                        'nomor_telepon' => $user->nomor_telepon,
+                        'phone_number_verified_at' => $user->phone_number_verified_at,
+                        'is_verifikasi' => true,
+                    ]
+                ], 200);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Nomor telepon tidak ditemukan',
-                ], 404);
+                    'message' => 'Kode OTP tidak valid',
+                ], 400);
             }
         } catch (Exception $e) {
             return response()->json([
@@ -144,7 +137,7 @@ class ServiceTwilloController extends Controller
                 $validOtp = $this->otpService->generateOtp();
 
                 // service twillo forbidden
-                // $this->otpService->sendOtp($formattedPhone, $validOtp);
+                // $this->otpService->sendOtp($userValid->nomor_telepon, $validOtp);
 
                 $userValid->update(['kode_otp' => $validOtp]);
 
@@ -156,7 +149,6 @@ class ServiceTwilloController extends Controller
                         'is_verifikasi' => false,
                         'token' => $token,
                         'kode_otp' => $validOtp,
-                    
                     ],
                 ], 201);
             }
@@ -184,7 +176,8 @@ class ServiceTwilloController extends Controller
 
         try {
             $validOtp = $this->otpService->generateOtp();
-            
+            // $this->otpService->sendOtp($user->nomor_telepon, $validOtp);
+
             $updateOtp = User::where('id', $user->id)->update(['kode_otp' => $validOtp]);
 
             if ($updateOtp) {
@@ -216,6 +209,4 @@ class ServiceTwilloController extends Controller
             'message' => 'Successfully logged out',
         ], 200);
     }
-
-    
 }
