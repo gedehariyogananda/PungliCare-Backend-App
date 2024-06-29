@@ -95,7 +95,7 @@
                         @foreach ($laporan->BuktiLaporan as $image)
                             @if (str_contains($image->bukti_laporan, ".mp4"))
                                 <div class="carousel-item">
-                                    <video  src="{{ asset('storage/' . $image->bukti_laporan) }}" class="d-block w-100 video-fluid" alt="...">
+                                    <video controls autoplay src="{{ asset('storage/' . $image->bukti_laporan) }}" class="d-block w-100 video-fluid" alt="...">
                                   </div>
                             @else
                                 <div class="carousel-item active">
@@ -227,26 +227,4 @@
         {{-- akhir modal delete --}}
     </section>
 
-    @push('scripts')
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.carousel-slide');
-
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.style.transform = `translateX(${(i - index) * 100}%)`;
-            });
-        }
-
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % slides.length;
-            showSlide(currentSlide);
-        }
-
-        function prevSlide() {
-            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-            showSlide(currentSlide);
-        }
-    </script>
-    @endpush
 </x-app-layout>
