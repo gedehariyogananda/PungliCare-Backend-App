@@ -68,7 +68,8 @@ class HomePageController extends Controller
         ]);
     }
 
-    public function detailUser() {
+    public function detailUser()
+    {
         return response()->json([
             'success' => true,
             'message' => 'Detail user berhasil diambil',
@@ -131,40 +132,52 @@ class HomePageController extends Controller
         }
     }
 
-    public function notifUserPatch()
+    public function notifUserPatch($id)
     {
         $userInit = auth()->user();
+        $laporanInit = Laporan::where('id', $id)->first();
 
-        $initNotif = NotifUser::with('laporan')->where('user_id', $userInit->id)->where('is_read', false)->get();
-
-        $countNotif = $initNotif->count();
-
-        $initNotifAll = NotifUser::with('laporan')->where('user_id', $userInit->id)->get();
-
-        $initNotif->each(function ($item) {
-            $item->is_read = true;
-            $item->save();
-        });
-
-        $mappedData = $initNotifAll->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'laporan_id' => $item->laporan_id,
-                'judul_laporan' => $item->laporan ? $item->laporan->judul_laporan : null,
-                'deskripsi_laporan' => $item->laporan ? $item->laporan->deskripsi_laporan : null,
-                'status_laporan' => $item->status_laporan,
-                'tanggal_notif' => $item->created_at->format('Y-m-d H:i:s'),
-                'is_selected' => false
-            ];
-        });
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Notifikasi berhasil diupdate',
-            'data' => [
-                'jumlah_notif' => $countNotif,
-                'isi_notif' => $mappedData,
-            ]
+        $notifLaporan = NotifUser::where('laporan_id', $laporanInit->id)->update([
+            'is_read' => true,
         ]);
+
+        // $initNotif = NotifUser::with('laporan')->where('user_id', $userInit->id)->where('is_read', false)->get();
+
+        // // $countNotif = $initNotif->count();
+
+        // $initNotifAll = NotifUser::with('laporan')->where('user_id', $userInit->id)->get();
+
+        // $initNotif->each(function ($item) {
+        //     $item->is_read = true;
+        //     $item->save();
+        // });
+
+        // $mappedData = $initNotifAll->map(function ($item) {
+        //     return [
+        //         'id' => $item->id,
+        //         'laporan_id' => $item->laporan_id,
+        //         'judul_laporan' => $item->laporan ? $item->laporan->judul_laporan : null,
+        //         'deskripsi_laporan' => $item->laporan ? $item->laporan->deskripsi_laporan : null,
+        //         'status_laporan' => $item->status_laporan,
+        //         'tanggal_notif' => $item->created_at->format('Y-m-d H:i:s'),
+        //         'is_selected' => false
+        //     ];
+        // });
+
+        if ($notifLaporan) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Notifikasi berhasil diupdate',
+                // 'data' => [
+                //     'jumlah_notif' => $countNotif,
+                //     'isi_notif' => $mappedData,
+                // ]
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ada yang salah',
+            ]);
+        }
     }
 }

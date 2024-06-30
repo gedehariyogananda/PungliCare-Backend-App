@@ -51,7 +51,7 @@ Route::controller(HomePageController::class)->group(function () {
     Route::get('/detail/user', 'detailUser');
     Route::get('/laporan/terdekat/{latitude}/{longitude}', 'laporanTerdekat');
     Route::get('/notif/user', 'notifUser');
-    Route::post('/patch/notif/user', 'notifUserPatch');
+    Route::post('/patch/notif/{id}', 'notifUserPatch');
 });
 
 Route::controller(LaporanController::class)->group(function () {
