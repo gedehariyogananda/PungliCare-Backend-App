@@ -24,6 +24,10 @@ class ForgotPasswordController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        if (!User::where('email', $request->email)->exists()) {
+            return response()->json(['message' => 'Email belum terdaftar'], 404);
+        }
+
         $otp = rand(1000, 9999);
         $expiresAt = Carbon::now()->addMinutes(10);
 
@@ -63,7 +67,7 @@ class ForgotPasswordController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'invalid otp or expired otp'
-            ]);
+            ], 401);
         } else {
             $user = User::where('email', $request->email);
             $user->password = Hash::make($request->new_password);
