@@ -9,7 +9,7 @@
 
 2. ENV e
     ```bash
-   APP_NAME=Laravel
+    APP_NAME=PungliCare
     APP_ENV=local
     APP_KEY=base64:Eszi20usN6dQJ45qTKPH8PpVy50Wxszz72EnKR+jd08=
     APP_DEBUG=true
@@ -38,12 +38,11 @@
     REDIS_PORT=6379
     
     MAIL_MAILER=smtp
-    MAIL_MAILER=smtp
     MAIL_HOST=smtp.gmail.com
-    MAIL_PORT=587
-    MAIL_USERNAME=pungli.care@gmail.com
-    MAIL_PASSWORD=wbnazxisduyhzrf
-    MAIL_ENCRYPTION=tls
+    MAIL_PORT=465
+    MAIL_USERNAME="pungli.care@gmail.com"
+    MAIL_PASSWORD="gyyaxqeucqadcmfu"
+    MAIL_ENCRYPTION=null
     MAIL_FROM_ADDRESS="pungli.care@gmail.com"
     MAIL_FROM_NAME="${APP_NAME}"
     
@@ -61,7 +60,7 @@
     MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
     
     TWILIO_SID=AC7af72b67e7ed6dd1980bbc4d1c06b9bf
-    TWILIO_TOKEN=a8260cb4c53e07f5eb47c2ebb9220586
+    TWILIO_TOKEN=b9625c88cbc206174de686a22888c2f2
     TWILIO_PHONE="+14153673148"
     JWT_SECRET=A3Ipouzl5tUNL13IFcFA85NWkYDeeJ4wNUeiQgWvXcoKtyi1bKY4U2H8mZuSLLsI
 
