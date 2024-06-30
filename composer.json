@@ -18,7 +18,7 @@
         "pbmedia/laravel-ffmpeg": "^8.3",
         "php-ffmpeg/php-ffmpeg": "^1.2",
         "spatie/laravel-image-optimizer": "^1.8",
-        "twilio/sdk": "^8.1",
+        "twilio/sdk": "^8.2",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
