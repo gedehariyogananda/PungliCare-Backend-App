@@ -39,7 +39,7 @@ class ServiceTwilloController extends Controller
             $validOtp = $this->otpService->generateOtp();
 
             // service twillo forbiden
-            $this->otpService->sendOtp($formattedPhone, $validOtp);
+            // $this->otpService->sendOtp($formattedPhone, $validOtp);
 
             $temporaryUser = User::create([
                 'nama' => $request->nama,
@@ -101,7 +101,7 @@ class ServiceTwilloController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Kode OTP tidak valid',
-                ], 400);
+                ], 401);
             }
         } catch (Exception $e) {
             return response()->json([
