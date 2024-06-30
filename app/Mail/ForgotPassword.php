@@ -19,11 +19,15 @@ class ForgotPassword extends Mailable
      * @return void
      */
 
-     public $otp;
+    public $otp;
+    public $get_user_mail;
+    public $get_name_user;
 
-    public function __construct($otp)
+    public function __construct($otp, $get_user_mail, $get_name_user)
     {
         $this->otp = $otp;
+        $this->get_user_mail = $get_user_mail;
+        $this->get_name_user = $get_name_user;
     }
 
     /**
@@ -34,17 +38,22 @@ class ForgotPassword extends Mailable
     public function envelope()
     {
         return new Envelope(
-            // subject: 'Forgot Password',
+            subject: 'Forgot Password Verification Code : ' . $this->otp,
         );
     }
 
     public function build()
     {
+        // return new Content(
+        //     view: 'emails.otp',
+        // );
         return $this->subject('Your Otp Code')
-                    ->view('emails.otp')
-                    ->with([
-                        'otp' => $this->otp,
-                    ]);
+            ->view('emails.otp')
+            ->with([
+                'otp' => $this->otp,
+                // 'get_user_mail' => $this->get_user_mail,
+                'get_name_user' => $this->get_name_user
+            ]);
     }
 
     /**

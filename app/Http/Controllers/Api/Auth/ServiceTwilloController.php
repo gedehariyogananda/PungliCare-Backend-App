@@ -39,7 +39,7 @@ class ServiceTwilloController extends Controller
             $validOtp = $this->otpService->generateOtp();
 
             // service twillo forbiden
-            $this->otpService->sendOtp($formattedPhone, $validOtp);
+            // $this->otpService->sendOtp($formattedPhone, $validOtp);
 
             $temporaryUser = User::create([
                 'nama' => $request->nama,
