@@ -540,7 +540,7 @@ class LaporanController extends Controller
             'judul_laporan' => 'required|string',
             'deskripsi_laporan' => 'required|string',
             'bukti_laporan' => 'required|array',
-            'bukti_laporan.*.bukti_laporan' => 'required|file|max:100000',
+            'bukti_laporan.*.bukti_laporan' => 'required|file',
             'alamat_laporan' => 'required|string',
             'lat' => 'required|numeric',
             'long' => 'required|numeric',

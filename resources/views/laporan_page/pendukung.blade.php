@@ -54,7 +54,7 @@
 
     <section class="section">
         <div class="row container">
-            <table class="table table-responsive">
+            <table class="table table-responsive bg-white">
                 <thead>
                     <tr>
                         <th scope="col">No</th>

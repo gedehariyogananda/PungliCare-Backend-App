@@ -123,86 +123,86 @@ class DatabaseSeeder extends Seeder
 
         Laporan::create([
             'user_id' => 2,
-            'lat' => "-7.2820549",
-            'long' => "112.7834058",
+            'lat' => "-6.3709947",
+            'long' => "106.8193141",
             'judul_laporan' => "Parkir Ilegal Di Indomaret Sukolilo",
             'deskripsi_laporan' => "Parkir Ilegal Di Indomaret Sukolilo sangat membuat saya risih, diminta 50.000 anjinggg",
             'status_laporan' => "sudah-teratasi",
             'tanggal_teratasi' => now(),
-            'alamat_laporan' => "Kertajaya Indah Regency 2, RW 02, Gebang Putih, Sukolilo, Surabaya, Jawa Timur, Jawa, 60111, Indonesia"
+            'alamat_laporan' => "Jl. Melawai Raya No.21, RT.2/RW.6, Melawai, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12160"
         ]);
 
         Laporan::create([
             'user_id' => 3,
-            'lat' => "-7.2798067",
-            'long' => "112.7894837",
+            'lat' => "-6.3696197",
+            'long' => "106.8180691",
             'judul_laporan' => "Parkir Ilegal Di Alfamart Sukolilo",
             'deskripsi_laporan' => "Parkir Ilegal Di Indomaret Alfamart sangat membuat saya risih, diminta 50.000 anjinggg",
             'status_laporan' => "perlu-dukungan",
-            'alamat_laporan' => "Kertajaya Indah Regency, RW 01, Gebang Putih, Sukolilo, Surabaya, Jawa Timur, Jawa, 60111, Indonesia"
+            'alamat_laporan' => "Jl. Kb. Sayur I, RT.8/RW.15, Bidara Cina, Kecamatan Jatinegara, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13330"
         ]);
 
         Laporan::create([
             'user_id' => 3,
-            'lat' => "-7.2926971",
-            'long' => "112.8006417",
+            'lat' => "-6.3573527",
+            'long' => "106.8145061",
             'judul_laporan' => "Parkir Ilegal Di sukolilo regency Sukolilo",
             'deskripsi_laporan' => "Parkir Ilegal Di sukolilo regency, ",
             'status_laporan' => "perlu-dukungan",
-            'alamat_laporan' => "SMK Negeri 10 Surabaya, Jalan Keputih Gang III E, RW 02, Keputih, Sukolilo, Surabaya, Jawa Timur, Jawa, 60111, Indonesia"
+            'alamat_laporan' => "Gg. H Salam No.96a, Pangkalan Jati, Kec. Cinere, Kota Depok, Jawa Barat 15143"
         ]);
 
         // ------------------------------------------------------------------------- //
 
         Laporan::create([
             'user_id' => 7,
-            'lat' => "-7.2696287",
-            'long' => "112.7961931",
+            'lat' => "-6.3562547",
+            'long' => "106.8120711",
             'judul_laporan' => "Parkir Ilegal Di Bhaskara Sealamat sukolilo",
             'deskripsi_laporan' => "Parkir Ilegal Di bhaskara regency, ",
             'status_laporan' => "perlu-dukungan",
-            'alamat_laporan' => "Kalisari, Kec. Mulyorejo, Surabaya, Jawa Timur"
+            'alamat_laporan' => "QV98+G95, RT.6/RW.4, Bidara Cina, Kecamatan Jatinegara, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13330"
         ]);
 
         Laporan::create([
             'user_id' => 8,
-            'lat' => "-7.2687127",
-            'long' => "112.7967885",
+            'lat' => "-6.3690757",
+            'long' => "106.8214281",
             'judul_laporan' => "Parkir Ilegal Di Bhaskara Utara",
             'deskripsi_laporan' => "Parkir Ilegal Di bhaskara utara, ",
             'status_laporan' => "perlu-dukungan",
-            'alamat_laporan' => "Jl. Bhaskara Barat Blok A No.10, RT.007/RW.02, Kalisari, Kec. Mulyorejo, Surabaya, Jawa Timur 60112"
+            'alamat_laporan' => "Jl. Melawai Raya No.21, RT.2/RW.6, Melawai, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12160"
         ]);
 
         Laporan::create([
             'user_id' => 9,
-            'lat' => "-7.2712417",
-            'long' => "112.7873571",
+            'lat' => "-6.322906",
+            'long' => "106.797000",
             'judul_laporan' => "Parkir Ilegal Di Sebelah Unair",
             'deskripsi_laporan' => "Parkir Ilegal Di Sebelah Unair utara mengerikan, ",
             'status_laporan' => "perlu-dukungan",
-            'alamat_laporan' => "Surabaya, Mulyorejo, Kec. Mulyorejo, Surabaya, Jawa Timur 60115"
+            'alamat_laporan' => "MQGW+VQW, Jl. H. Saleh, Pd. Labu, Kec. Cilandak, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 16513"
         ]);
 
         Laporan::create([
             'user_id' => 10,
-            'lat' => "-7.2712417",
-            'long' => "112.7873571",
+            'lat' => "-6.3679987",
+            'long' => "106.8186931",
             'judul_laporan' => "Parkir Ilegal Di Dharmahusada",
             'deskripsi_laporan' => "Parkir Ilegal Di Dharmahusada mengerikan, ",
             'status_laporan' => "perlu-diatasi",
-            'alamat_laporan' => "Jl. Pondok Dharmahusada I Blok DR-301 No.2, RT.000/RW.00, Mulyorejo, Kec. Mulyorejo, Surabaya, Jawa Timur 60115"
+            'alamat_laporan' => "Jl. Sensus IV D No.21, RT.5/RW.14, Bidara Cina, Kecamatan Jatinegara, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13330"
         ]);
 
 
         Laporan::create([
             'user_id' => 11,
-            'lat' => "-7.274328",
-            'long' => "112.7852328",
+            'lat' => "-6.3670177",
+            'long' => "106.8179851",
             'judul_laporan' => "Parkir Ilegal Di Wisma Permai ",
             'deskripsi_laporan' => "Parkir Ilegal Di WismaPermai mengerikan, ",
             'status_laporan' => "perlu-dukungan",
-            'alamat_laporan' => "No. GG5, Jl. Wisma Permai Tengah X, Mulyorejo, Kec. Mulyorejo, Surabaya, Jawa Timur 60115"
+            'alamat_laporan' => "Jl. H. Saleh 4-25, Pangkalan Jati, Kec. Cinere, Kota Depok, Jawa Barat 16514"
         ]);
 
 

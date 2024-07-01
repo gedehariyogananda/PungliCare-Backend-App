@@ -5,13 +5,13 @@
     <style>
         .img-fluid {
             width: 100%;
-            height: 350px;
+            height: 500px;
             object-fit: cover;
         }
 
         .video-fluid {
             width: 100%;
-            height: 350px;
+            height: 500px;
             object-fit: cover;
         }
 
@@ -35,7 +35,7 @@
         }
 
         .carousel-container {
-            height: 350px;
+            height: 500px;
             width: 100%;
             overflow: hidden;
             position: relative;
@@ -61,19 +61,19 @@
     switch ($laporan->status_laporan) {
     case "perlu-diatasi" :
     $status = "Perlu Diatasi";
-    $color = "text-red-700 border-red-700";
+    $color = "text-red-700 bg-danger";
     break;
     case "perlu-dukungan" :
     $status = "Perlu Dukungan";
-    $color = "text-yellow-400 border-yellow-400 ";
+    $color = "text-yellow-400 bg-warning ";
     break;
     case "sedang-diatasi" :
     $status = "Sedang Diatasi";
-    $color = "text-blue-700 border-blue-700";
+    $color = "text-blue-700 bg-info";
     break;
     default:
     $status = "Sudah Teratasi";
-    $color = "text-green-600 border-green-600";
+    $color = "text-green-600 bg-success";
     break;
     }
     @endphp
@@ -127,40 +127,41 @@
                     <h6>Description</h6>
                     <p>{{ $laporan->deskripsi_laporan }}</p>
                 </div>
-                <span class="border-2 rounded-xl p-2 h-20 {{ $color }}">
+                <span class="badge {{ $color }} h-6">
                     {{ $status }}
                 </span>
             </div>
+
             <div class="col-lg-4 bg-white rounded-lg my-3 p-3">
-                <h5>Detail Laporan</h5>
+                <h5 class="text-black">Detail Laporan</h5>
                 <a href="{{ route('laporan.pendukung',$laporan->id) }}">
                     <div class="flex justify-between my-2">
                         <div class="flex">
-                            <img src={{ asset("/images/support.png") }} alt="" width="30" height="30" class="mr-5">
-                            <h6 class="align-center m-auto text-gray-600">{{ count($laporan->VoteLaporan) }} Orang
+                            <img src={{ asset("/images/support.png") }} alt="" width="20" height="20" class="mr-5">
+                            <h6 class="align-center m-auto text-gray-600" style="font-size: 14px">{{ count($laporan->VoteLaporan) }} Orang
                                 Mendukung</h6>
                         </div>
-                        <img src={{ asset("/images/Arrow.png") }} alt="" width="26" height="27">
+                        <img src={{ asset("/images/Arrow.png") }} alt="" width="20" height="20">
                     </div>
                 </a>
                 <a href="{{ route('laporan.comment',$laporan->id) }}">
                     <div class="flex justify-between my-2">
                         <div class="flex">
-                            <img src={{ asset("/images/comment.png") }} alt="" width="30" height="30" class="mr-5">
-                            <h6 class="align-center m-auto text-gray-600">{{ count($laporan->CommentLaporan) }} Orang
+                            <img src={{ asset("/images/comment.png") }} alt="" width="20" height="20" class="mr-5">
+                            <h6 class="align-center m-auto text-gray-600" style="font-size: 14px">{{ count($laporan->CommentLaporan) }} Orang
                                 Mengomentari</h6>
                         </div>
-                        <img src={{ asset("/images/Arrow.png") }} alt="" width="26" height="27">
+                        <img src={{ asset("/images/Arrow.png") }} alt="" width="20" height="20">
                     </div>
                 </a>
                 <a href="{{ route('laporan.reports', $laporan->id) }}">
                     <div class="flex justify-between my-2">
                         <div class="flex">
-                            <img src={{ asset("/images/report.png") }} alt="" width="26" height="27" class="mr-5">
-                            <h6 class="align-center m-auto  text-gray-600">{{ count($laporan->ReportLaporan) }} Orang
+                            <img src={{ asset("/images/report.png") }} alt="" width="20" height="20" class="mr-5">
+                            <h6 class="align-center m-auto  text-gray-600" style="font-size: 14px">{{ count($laporan->ReportLaporan) }} Orang
                                 Melaporkan</h6>
                         </div>
-                        <img src={{ asset("/images/Arrow.png") }} alt="" width="26" height="27">
+                        <img src={{ asset("/images/Arrow.png") }} alt="" width="20" height="20">
                     </div>
                 </a>
                 <button class="w-full p-3 bg-indigo-700 rounded-xl cursor-pointer text-white my-3 "
@@ -208,7 +209,7 @@
             <div class="modal-dialog modal-dialog-centered" data-bs-centered="true">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Alert</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Peringatan</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

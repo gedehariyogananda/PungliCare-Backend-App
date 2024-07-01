@@ -43,11 +43,18 @@
             font-size: 14px;
             font-weight: bold;
             margin-bottom: 0.5rem;
+            color: black;
         }
 
         .card-text {
-            font-size: 8px;
+            font-size: 10px;
             margin-bottom: 0.25rem;
+            color: black;
+        }
+        .card-description {
+            font-size: 10px;
+            margin-bottom: 0.25rem;
+            color: #ccc;
         }
 
         .card-body p i {
@@ -133,7 +140,7 @@
                             </div>
                             <div class="card-body">
                                 <h6 class="card-title">{{ $data['judul_laporan'] }}</h6>
-                                <p class="card-text">{{ \Illuminate\Support\Str::limit($data['deskripsi_laporan'], 50)
+                                <p class="card-description">{{ \Illuminate\Support\Str::limit($data['deskripsi_laporan'], 50)
                                     }}</p>
                                 <p class="card-text"><i style="color: #FE8235;" class="bi bi-geo-alt"></i> {{
                                     \Illuminate\Support\Str::limit($data['alamat'], 50) }}</p>

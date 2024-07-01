@@ -26,8 +26,8 @@
     <script>
         let map, markers = [];
         const defaultLocation = {
-            lat: -7.298229,
-            lng: 112.804915,
+            lat: -6.3707762,
+            lng: 106.8236706,
         };
 
         /* ----------------------------- Initialize Map ----------------------------- */
