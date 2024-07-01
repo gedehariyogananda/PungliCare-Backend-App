@@ -529,7 +529,6 @@ class LaporanController extends Controller
             'data' => $mappedData
         ]);
     }
-
     public function buatLaporan($latitude, $longitude, Request $request)
     {
         $initLog = auth()->user()->id;
@@ -537,8 +536,8 @@ class LaporanController extends Controller
         $validator = Validator::make($request->all(), [
             'judul_laporan' => 'required|string',
             'deskripsi_laporan' => 'required|string',
-            'bukti_laporan' => 'required',
-            // 'bukti_laporan.*.bukti_laporan' => 'required|file|max:100000',
+            'bukti_laporan' => 'required|array',
+            'bukti_laporan.*.bukti_laporan' => 'required|file|max:100000',
             'alamat_laporan' => 'required|string',
             'lat' => 'required|numeric',
             'long' => 'required|numeric',
@@ -580,46 +579,16 @@ class LaporanController extends Controller
                 'long' => $request->long,
             ]);
 
-            if ($request->hasFile('bukti_laporan')) {
-                foreach ($request->file('bukti_laporan') as $file) {
-                    $destinationPath = 'storage/bukti_comments/';
-            
-                    if (strpos($request->file('bukti_laporan')->getMimeType(), 'image') !== false) {
-                        // Jika file adalah gambar
-                        $compressedImage = Image::make($request->file('bukti_laporan'))
-                            ->resize(800, null, function ($constraint) {
-                                $constraint->aspectRatio();
-                            })
-                            ->encode('jpg', 75); // Mengompresi gambar dengan format JPG dan kualitas 75%
-            
-                        // Simpan gambar ke storage
-                        $path = $request->file('bukti_laporan')->store('bukti_laporan', 'public');
-            
-                        // Simpan record ke database
-                        BuktiLaporan::create([
-                            'laporan_id' => $laporan->id,
-                            'bukti_laporan' => $path,
-                        ]);
-                    } elseif (strpos($request->file('bukti_laporan')->getMimeType(), 'video') !== false) {
-                        // Jika file adalah video
-                        $filename = $request->file('bukti_laporan')->getClientOriginalName();
-                        $$request->file('bukti_laporan')->move(public_path('storage/bukti_comments/'), $filename);
-            
-                        // Kompresi video menggunakan FFMpeg
-                        FFMpeg::fromDisk('public')
-                            ->open($destinationPath . $filename)
-                            ->export()
-                            ->toDisk('public')
-                            ->inFormat(new \FFMpeg\Format\Video\X264('libmp3lame', 'libx264'))
-                            ->save($destinationPath . 'compressed/' . $filename);
-            
-                        // Simpan record ke database
-                        BuktiLaporan::create([
-                            'comment_laporan_id' => $laporan->id,
-                            'bukti_comment' => $destinationPath . 'compressed/' . $filename,
-                        ]);
-                    }
-                }
+            foreach ($request->bukti_laporan as $bukti) {
+                $file = $bukti['bukti_laporan'];
+                $extension = $file->getClientOriginalExtension();
+                $buktiLaporanName = time() . '-' . rand(1, 10) . '.' . $extension;
+                $file->storeAs('public/bukti-laporan', $buktiLaporanName);
+
+                BuktiLaporan::create([
+                    'laporan_id' => $laporan->id,
+                    'bukti_laporan' => 'bukti-laporan/' . $buktiLaporanName,
+                ]);
             }
 
             return response()->json([
