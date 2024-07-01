@@ -11,6 +11,7 @@ use App\Models\VoteLaporan;
 use App\Services\ConvertAlamatService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
@@ -529,10 +530,12 @@ class LaporanController extends Controller
             'data' => $mappedData
         ]);
     }
+
     public function buatLaporan($latitude, $longitude, Request $request)
     {
         $initLog = auth()->user()->id;
 
+        // Validasi input
         $validator = Validator::make($request->all(), [
             'judul_laporan' => 'required|string',
             'deskripsi_laporan' => 'required|string',
@@ -548,6 +551,7 @@ class LaporanController extends Controller
         }
 
         try {
+            // Menghitung jarak antara dua koordinat
             $latFrom = deg2rad(floatval($latitude));
             $longFrom = deg2rad(floatval($longitude));
             $latTo = deg2rad(floatval($request->lat));
@@ -570,6 +574,7 @@ class LaporanController extends Controller
                 ], 400);
             }
 
+            // Membuat laporan baru
             $laporan = Laporan::create([
                 'user_id' => $initLog,
                 'judul_laporan' => $request->judul_laporan,
@@ -579,15 +584,46 @@ class LaporanController extends Controller
                 'long' => $request->long,
             ]);
 
+            $destinationPath = 'bukti-laporan/';
             foreach ($request->bukti_laporan as $bukti) {
                 $file = $bukti['bukti_laporan'];
                 $extension = $file->getClientOriginalExtension();
                 $buktiLaporanName = time() . '-' . rand(1, 10) . '.' . $extension;
-                $file->storeAs('public/bukti-laporan', $buktiLaporanName);
+
+                if (strpos($file->getMimeType(), 'image') !== false) {
+                    $compressedImage = Image::make($file->getRealPath());
+                    if ($compressedImage->width() > 800) {
+                        $compressedImage->resize(800, null, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                    }
+
+                    $extension = $file->getClientOriginalExtension();
+                    if (in_array($extension, ['jpeg', 'jpg'])) {
+                        $compressedImage->encode('jpg', 75);
+                    } elseif (in_array($extension, ['png'])) {
+                        $compressedImage->encode('png', 75);
+                    } else {
+                        $compressedImage->encode('jpg', 75);
+                    }
+
+                    $compressedImage->save(storage_path('app/public/' . $destinationPath . $buktiLaporanName));
+                } elseif (strpos($file->getMimeType(), 'video') !== false) {
+                    $tempPath = $file->storeAs('public/' . $destinationPath, 'temp-' . $buktiLaporanName);
+
+                    FFMpeg::fromDisk('public')
+                        ->open($destinationPath . 'temp-' . $buktiLaporanName)
+                        ->export()
+                        ->toDisk('public')
+                        ->inFormat(new \FFMpeg\Format\Video\X264('libmp3lame', 'libx264'))
+                        ->save($destinationPath . $buktiLaporanName);
+
+                    Storage::disk('public')->delete($destinationPath . 'temp-' . $buktiLaporanName);
+                }
 
                 BuktiLaporan::create([
                     'laporan_id' => $laporan->id,
-                    'bukti_laporan' => 'bukti-laporan/' . $buktiLaporanName,
+                    'bukti_laporan' => $destinationPath . $buktiLaporanName,
                 ]);
             }
 
