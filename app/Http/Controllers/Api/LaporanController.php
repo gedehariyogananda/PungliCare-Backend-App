@@ -39,7 +39,6 @@ class LaporanController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-
         try {
             $initLog = auth()->user()->id;
             $laporan = $this->laporan->where('id', $id)->first();
@@ -49,6 +48,29 @@ class LaporanController extends Controller
                     'success' => false,
                     'message' => 'Laporan tidak ditemukan'
                 ], 404);
+            }
+
+            // Menghitung jarak antara lokasi user dan lokasi laporan
+            $radius = 6371; // Radius bumi dalam kilometer
+
+            $latFrom = deg2rad(floatval($laporan->lat));
+            $longFrom = deg2rad(floatval($laporan->long));
+            $latTo = deg2rad(floatval($request->user()->lat));
+            $longTo = deg2rad(floatval($request->user()->long));
+
+            $latDelta = $latTo - $latFrom;
+            $longDelta = $longTo - $longFrom;
+
+            $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+                cos($latFrom) * cos($latTo) * pow(sin($longDelta / 2), 2)));
+            $distance = $radius * $angle;
+
+            // Validasi jarak 5 kilometer
+            if ($distance > 5) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal melaporkan karena jarak terlalu jauh'
+                ], 400);
             }
 
             $reportLaporan = ReportLaporan::where('laporan_id', $id)->where('user_id', $initLog)->first();
@@ -187,25 +209,27 @@ class LaporanController extends Controller
             ], 404);
         }
 
-        // pengecekan lat long user, jika jarak 5kilo jauh dari lat long laporan, maka tidak bisa memberi dukungan
-        $radius = 6371;
+        // Menghitung jarak antara lokasi user dan lokasi laporan
+        $radius = 6371; // Radius bumi dalam kilometer
 
-        $laporanTerdekatInit = Laporan::selectRaw(
-            "*, 
-        ($radius * acos(cos(radians(?)) * cos(radians(`lat`)) * cos(radians(`long`) - radians(?)) + sin(radians(?)) * sin(radians(`lat`)))) AS distance",
-            [$lat, $long, $lat]
-        )
-            ->having("distance", "<", 5)
-            ->orderBy("distance", "asc")
-            ->with('BuktiLaporan', 'ReportLaporan', 'NotifUser', 'VoteLaporan')
-            ->where('status_laporan', 'perlu-dukungan')
-            ->first();
+        $latFrom = deg2rad(floatval($laporan->lat));
+        $longFrom = deg2rad(floatval($laporan->long));
+        $latTo = deg2rad(floatval($lat));
+        $longTo = deg2rad(floatval($long));
 
-        if (!$laporanTerdekatInit) {
+        $latDelta = $latTo - $latFrom;
+        $longDelta = $longTo - $longFrom;
+
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+            cos($latFrom) * cos($latTo) * pow(sin($longDelta / 2), 2)));
+        $distance = $radius * $angle;
+
+        // Validasi jarak 5 kilometer
+        if ($distance > 5) {
             return response()->json([
                 'success' => false,
-                'message' => 'gabisa mendukung karena jauh'
-            ], 404);
+                'message' => 'Gagal mendukung karena jarak terlalu jauh'
+            ], 400);
         }
 
         $is_laporan_sendiri = $laporan->user_id == $initLog;
@@ -220,12 +244,11 @@ class LaporanController extends Controller
         $is_memberi_dukungan = $laporan->VoteLaporan->where('user_id', $initLog)->first();
 
         if ($is_memberi_dukungan) {
-
             $initCountLaporan = VoteLaporan::where('laporan_id', $id)->count();
             if ($initCountLaporan == 50) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Gagal membatalkan dukungan, karena sudah mencapai 50 dukungan sudah diproses admin masuk ke perlu-diatasi'
+                    'message' => 'Gagal membatalkan dukungan, karena sudah mencapai 50 dukungan dan sudah diproses admin masuk ke perlu-diatasi'
                 ], 400);
             }
 
@@ -241,17 +264,15 @@ class LaporanController extends Controller
             'user_id' => $initLog,
         ]);
 
-
         if ($successInsert) {
-
-            // if vote udah 50 otomatis update perlu-diatasi
+            // Jika vote sudah 50 otomatis update status perlu-diatasi
             $selectCountVoteLaporan = VoteLaporan::where('laporan_id', $id)->count();
             if ($selectCountVoteLaporan >= 50) {
                 $laporan->update([
                     'status_laporan' => 'perlu-diatasi'
                 ]);
 
-                // notif user
+                // Notifikasi ke user
                 $laporan->NotifUser()->create([
                     'user_id' => $laporan->user_id,
                     'status_laporan' => 'perlu-diatasi'
@@ -597,15 +618,8 @@ class LaporanController extends Controller
                             $constraint->aspectRatio();
                         });
                     }
-
                     $extension = $file->getClientOriginalExtension();
-                    if (in_array($extension, ['jpeg', 'jpg'])) {
-                        $compressedImage->encode('jpg', 75);
-                    } elseif (in_array($extension, ['png'])) {
-                        $compressedImage->encode('png', 75);
-                    } else {
-                        $compressedImage->encode('jpg', 75);
-                    }
+                    $compressedImage->encode('jpg', 75);
 
                     $compressedImage->save(storage_path('app/public/' . $destinationPath . $buktiLaporanName));
                 } elseif (strpos($file->getMimeType(), 'video') !== false) {

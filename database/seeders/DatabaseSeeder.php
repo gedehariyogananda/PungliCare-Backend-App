@@ -197,8 +197,8 @@ class DatabaseSeeder extends Seeder
 
         Laporan::create([
             'user_id' => 11,
-            'lat' => "-6.3670177",
-            'long' => "106.8179851",
+            'lat' => "-6.2433133",
+            'long' => "106.7810579",
             'judul_laporan' => "Parkir Ilegal Di Wisma Permai ",
             'deskripsi_laporan' => "Parkir Ilegal Di WismaPermai mengerikan, ",
             'status_laporan' => "perlu-dukungan",

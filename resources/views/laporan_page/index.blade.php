@@ -130,7 +130,7 @@
                 $statusText = 'Status Tidak Diketahui';
                 }
                 @endphp
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
                     <a href="{{ route('laporan.detail',['id'=>$data['id']]) }}">
                         <div class="card">
                             <div style="position: relative;">
