@@ -59,10 +59,10 @@
     MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
     MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
     
-    TWILIO_SID=AC7af72b67e7ed6dd1980bbc4d1c06b9bf
-    TWILIO_TOKEN=b9625c88cbc206174de686a22888c2f2
-    TWILIO_PHONE="+14153673148"
-    JWT_SECRET=A3Ipouzl5tUNL13IFcFA85NWkYDeeJ4wNUeiQgWvXcoKtyi1bKY4U2H8mZuSLLsI
+    TWILIO_SID="sid twilio"
+    TWILIO_TOKEN="token twilio"
+    TWILIO_PHONE="service twillo number"
+    JWT_SECRET="ur jwt secret"
 
     ```
 
